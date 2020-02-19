@@ -1,0 +1,5 @@
+package boxes;
+
+public enum PropertyState {
+	NO_OWNER, NO_HOUSES, ALL_GROUP, ONE_HOUSE, TWO_HOUSES, THREE_HOUSES, FOUR_HOUSES, ONE_HOTEL, MORTAGED
+}

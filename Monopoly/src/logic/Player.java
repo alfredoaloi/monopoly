@@ -6,6 +6,7 @@ public class Player {
 	private int cash;
 	private int position;
 	private int properties;
+	private boolean human;
 
 	public Player() {
 		name = "DEFAULT_NAME";
@@ -14,10 +15,11 @@ public class Player {
 		properties = 0;
 	}
 
-	public Player(String name, int cash) {
+	public Player(String name, int cash, boolean human) {
 		super();
 		this.name = name;
 		this.cash = cash;
+		this.human = human;
 		position = 0;
 		properties = 0;
 	}
@@ -52,6 +54,14 @@ public class Player {
 
 	public void setProperties(int properties) {
 		this.properties = properties;
+	}
+
+	public boolean isHuman() {
+		return human;
+	}
+
+	public void setHuman(boolean human) {
+		this.human = human;
 	}
 
 	public void payToBank(int amount) {

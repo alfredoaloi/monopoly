@@ -11,6 +11,9 @@ import javafx.fxml.FXML;
 import javafx.scene.Node;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
+import javafx.scene.control.TextArea;
+import javafx.scene.control.TextField;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
@@ -36,17 +39,62 @@ public class ApplicationController {
 	@FXML
 	private Button continueButton;
 
+	@FXML
+	private Label player1NameLabel;
+
+	@FXML
+	private Label player2NameLabel;
+
+	@FXML
+	private Label player3NameLabel;
+
+	@FXML
+	private Label player4NameLabel;
+
+	@FXML
+	private Label player1CashLabel;
+
+	@FXML
+	private Label player2CashLabel;
+
+	@FXML
+	private Label player3CashLabel;
+
+	@FXML
+	private Label player4CashLabel;
+
+	@FXML
+	private Label player1PropertiesLabel;
+
+	@FXML
+	private Label player2PropertiesLabel;
+
+	@FXML
+	private Label player3PropertiesLabel;
+
+	@FXML
+	private Label player4PropertiesLabel;
+
+	@FXML
+	private Label currentPlayerLabel;
+
+	@FXML
+	private TextArea lastEventTextArea;
+
+	public static String lastEventString;
+
 	private ArrayList<StackPane> stackPanes;
 
 	private Board board;
 
-	private String player1Name = "1";
-	private String player2Name = "2";
-	private String player3Name = "3";
-	private String player4Name = "4";
+	private String player1Name = "VERDE";
+	private String player2Name = "ROSSO";
+	private String player3Name = "BLU";
+	private String player4Name = "GIALLO";
 
 	@FXML
 	void initialize() {
+		lastEventString = "";
 		stackPanes = new ArrayList<StackPane>();
 
 		ObservableList<Node> southCopy = FXCollections.observableArrayList();
@@ -79,12 +127,29 @@ public class ApplicationController {
 			});
 		}
 
+		player1NameLabel.setText("Giocatore " + player1Name);
+		player2NameLabel.setText("Giocatore " + player2Name);
+		player3NameLabel.setText("Giocatore " + player3Name);
+		player4NameLabel.setText("Giocatore " + player4Name);
+
+		player1CashLabel.setText("Cash " + 1500);
+		player2CashLabel.setText("Cash " + 1500);
+		player3CashLabel.setText("Cash " + 1500);
+		player4CashLabel.setText("Cash " + 1500);
+
+		player1PropertiesLabel.setText("Proprietà " + 0);
+		player2PropertiesLabel.setText("Proprietà " + 0);
+		player3PropertiesLabel.setText("Proprietà " + 0);
+		player4PropertiesLabel.setText("Proprietà " + 0);
+
+		currentPlayerLabel.setText("Prossimo turno del giocatore " + player1Name);
+
 		board = new Board();
 		board.createBoard();
-		Player player1 = new Player(player1Name, 1500);
-		Player player2 = new Player(player2Name, 1500);
-		Player player3 = new Player(player3Name, 1500);
-		Player player4 = new Player(player4Name, 1500);
+		Player player1 = new Player(player1Name, 1500, true);
+		Player player2 = new Player(player2Name, 1500, false);
+		Player player3 = new Player(player3Name, 1500, false);
+		Player player4 = new Player(player4Name, 1500, false);
 		board.getPlayers().add(player1);
 		board.getPlayers().add(player2);
 		board.getPlayers().add(player3);
@@ -278,8 +343,34 @@ public class ApplicationController {
 
 		board.getBoxes().get(currentPlayer.getPosition()).onAction(currentPlayer);
 
+		if (!(lastEventString.equals(""))) {
+			lastEventTextArea.appendText(lastEventString + "\n");
+		}
+		lastEventString = "";
+
+		player1CashLabel.setText("Cash " + board.getPlayers().get(0).getCash());
+		player2CashLabel.setText("Cash " + board.getPlayers().get(1).getCash());
+		player3CashLabel.setText("Cash " + board.getPlayers().get(2).getCash());
+		player4CashLabel.setText("Cash " + board.getPlayers().get(3).getCash());
+
+		player1PropertiesLabel.setText("Proprietà " + board.getPlayers().get(0).getProperties());
+		player2PropertiesLabel.setText("Proprietà " + board.getPlayers().get(1).getProperties());
+		player3PropertiesLabel.setText("Proprietà " + board.getPlayers().get(2).getProperties());
+		player4PropertiesLabel.setText("Proprietà " + board.getPlayers().get(3).getProperties());
+
 		// altre cose
 
+		for (Player player : board.getPlayers()) {
+			if (player.getCash() < 0) {
+				lastEventTextArea.appendText("Il gioco è finito");
+				continueButton.setDisable(true);
+				return;
+			}
+		}
+
 		board.nextPlayer();
+
+		currentPlayerLabel.setText("Prossimo turno del giocatore " + board.getCurrentPlayer().getName());
 	}
+
 }

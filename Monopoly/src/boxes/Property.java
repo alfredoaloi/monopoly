@@ -1,7 +1,12 @@
 package boxes;
 
 import java.util.HashMap;
+import java.util.Optional;
 
+import application.ApplicationController;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
+import javafx.scene.control.ButtonType;
 import logic.Player;
 
 public class Property extends Box {
@@ -75,29 +80,51 @@ public class Property extends Box {
 	public void onAction(Player player) {
 		if (state == PropertyState.MORTAGED) {
 			// La proprietà è ipotecata, quindi non si paga l'affitto
-			System.out.println("Proprietà ipotecata");
+			ApplicationController.lastEventString = "La proprietà " + this.getName() + " è ipotecata";
 			return;
 		} else if (state == PropertyState.NO_OWNER) {
 			if (player.getCash() < this.value) {
-				// non ho abbastanza soldi
-				System.out.println(player.getName() + " non ha abbastanza soldi per comprare la proprietà");
+				ApplicationController.lastEventString = "Il giocatore " + player.getName()
+						+ " non ha abbastanza denaro per acquistare la proprietà " + this.getName();
 				return;
 			} else {
-				// Il giocatore se la compra PER IL MOMENTO
-				System.out.println("Proprietà comprata dal giocatore " + player.getName());
-				player.payToBank(this.value);
-				this.owner = player;
-				this.state = PropertyState.NO_HOUSES;
-				player.setProperties(player.getProperties() + 1);
-				return;
+				if (player.isHuman()) {
+					Alert alert = new Alert(AlertType.CONFIRMATION);
+					alert.setTitle("ACQUISTO PROPRIETA'");
+					alert.setHeaderText(null);
+					alert.setContentText("Vuoi acquistare la proprietà " + this.getName() + "?");
+
+					Optional<ButtonType> result = alert.showAndWait();
+					if (result.get() == ButtonType.OK) {
+						ApplicationController.lastEventString = "Proprietà " + this.getName()
+								+ " comprata dal giocatore " + player.getName();
+						player.payToBank(this.value);
+						this.owner = player;
+						this.state = PropertyState.NO_HOUSES;
+						player.setProperties(player.getProperties() + 1);
+						return;
+					} else {
+						System.out.println("In teoria va all'asta");
+					}
+				} else {
+					// Il giocatore se la compra PER IL MOMENTO
+					ApplicationController.lastEventString = "Proprietà " + this.getName() + " comprata dal giocatore "
+							+ player.getName();
+					player.payToBank(this.value);
+					this.owner = player;
+					this.state = PropertyState.NO_HOUSES;
+					player.setProperties(player.getProperties() + 1);
+					return;
+				}
 			}
+
 		} else if (owner.equals(player)) {
 			// Il giocatore è il proprietario della proprietà
-			System.out.println("Il giocatore è finito su una sua proprietà");
+			ApplicationController.lastEventString = "Il giocatore " + player.getName() + " è finito su una sua proprietà";
 			return;
 		} else {
-			System.out.println("Il giocatore " + player.getName() + " deve pagare " + this.rentPrice.get(this.state)
-					+ " al giocatore " + this.owner.getName());
+			ApplicationController.lastEventString = "Il giocatore " + player.getName() + " deve pagare "
+					+ this.rentPrice.get(this.state) + " al giocatore " + this.owner.getName();
 			player.payToPlayer(this.owner, this.rentPrice.get(this.state));
 			return;
 		}

@@ -169,9 +169,8 @@ public class ApplicationController {
 
 	@FXML
 	void continueButtonAction(ActionEvent event) {
-		// TODO:caccialo
-		boolean prigione = true;
 		Player currentPlayer = board.getCurrentPlayer();
+		int previousPosition = currentPlayer.getPosition();
 
 		StackPane previous = stackPanes.get(currentPlayer.getPosition());
 		Canvas canvas = (Canvas) previous.getChildren().get(1);
@@ -186,7 +185,7 @@ public class ApplicationController {
 				canvas.getGraphicsContext2D().clearRect(canvas.getWidth() - 5 - 20, canvas.getHeight() - 5 - 20, 20,
 						20);
 			}
-		} else if (currentPlayer.getPosition() == 10 && !prigione) {
+		} else if (currentPlayer.getPosition() == 10 && currentPlayer.getDaysInPrison() == 0) {
 			if (currentPlayer.getName().equals(player1Name)) {
 				canvas.getGraphicsContext2D().clearRect(0, 5, 20, 20);
 			} else if (currentPlayer.getName().equals(player2Name)) {
@@ -196,7 +195,6 @@ public class ApplicationController {
 			} else if (currentPlayer.getName().equals(player4Name)) {
 				canvas.getGraphicsContext2D().clearRect(canvas.getWidth() - 5 - 20, canvas.getHeight() - 20, 20, 20);
 			}
-		} else if (currentPlayer.getPosition() == 10 && prigione) {
 			if (currentPlayer.getName().equals(player1Name)) {
 				canvas.getGraphicsContext2D().clearRect(20 + 5, 5, 20, 20);
 			} else if (currentPlayer.getName().equals(player2Name)) {
@@ -242,13 +240,26 @@ public class ApplicationController {
 			}
 		}
 
-		int steps = Dice.launch();
-		currentPlayer.setPosition((currentPlayer.getPosition() + steps) % Board.BOXES);
+		if (currentPlayer.getDaysInPrison() == 0) {
+			int steps = Dice.launch();
+			currentPlayer.setPosition((currentPlayer.getPosition() + steps) % Board.BOXES);
+		}
 
-		canvas.getGraphicsContext2D().setFill(Color.GREEN);
-		canvas.getGraphicsContext2D().setFill(Color.RED);
-		canvas.getGraphicsContext2D().setFill(Color.BLUE);
-		canvas.getGraphicsContext2D().setFill(Color.YELLOW);
+		if (currentPlayer.getPosition() == 30) {
+			StackPane next = stackPanes.get(currentPlayer.getPosition());
+			canvas = (Canvas) next.getChildren().get(1);
+			if (currentPlayer.getName().equals(player1Name)) {
+				canvas.getGraphicsContext2D().clearRect(canvas.getWidth() - 5 - 20, canvas.getHeight() - 30 - 20, 20,
+						20);
+			} else if (currentPlayer.getName().equals(player2Name)) {
+				canvas.getGraphicsContext2D().clearRect(5, canvas.getHeight() - 30 - 20, 20, 20);
+			} else if (currentPlayer.getName().equals(player3Name)) {
+				canvas.getGraphicsContext2D().clearRect(canvas.getWidth() - 5 - 20, 5, 20, 20);
+			} else if (currentPlayer.getName().equals(player4Name)) {
+				canvas.getGraphicsContext2D().clearRect(5, 5, 20, 20);
+			}
+			board.getBoxes().get(currentPlayer.getPosition()).onAction(currentPlayer);
+		}
 
 		StackPane next = stackPanes.get(currentPlayer.getPosition());
 		canvas = (Canvas) next.getChildren().get(1);
@@ -266,7 +277,7 @@ public class ApplicationController {
 				canvas.getGraphicsContext2D().setFill(Color.YELLOW);
 				canvas.getGraphicsContext2D().fillRect(canvas.getWidth() - 5 - 20, canvas.getHeight() - 5 - 20, 20, 20);
 			}
-		} else if (currentPlayer.getPosition() == 10 && !prigione) {
+		} else if (currentPlayer.getPosition() == 10 && currentPlayer.getDaysInPrison() == 0) {
 			if (currentPlayer.getName().equals(player1Name)) {
 				canvas.getGraphicsContext2D().setFill(Color.GREEN);
 				canvas.getGraphicsContext2D().fillRect(0, 5, 20, 20);
@@ -280,7 +291,7 @@ public class ApplicationController {
 				canvas.getGraphicsContext2D().setFill(Color.YELLOW);
 				canvas.getGraphicsContext2D().fillRect(canvas.getWidth() - 5 - 20, canvas.getHeight() - 20, 20, 20);
 			}
-		} else if (currentPlayer.getPosition() == 10 && prigione) {
+		} else if (currentPlayer.getPosition() == 10) {
 			if (currentPlayer.getName().equals(player1Name)) {
 				canvas.getGraphicsContext2D().setFill(Color.GREEN);
 				canvas.getGraphicsContext2D().fillRect(20 + 5, 5, 20, 20);
@@ -341,10 +352,16 @@ public class ApplicationController {
 			}
 		}
 
+		if (previousPosition > currentPlayer.getPosition() && currentPlayer.getDaysInPrison() == 0) {
+			lastEventTextArea.appendText("[" + currentPlayer.getName() + "] Il giocatore " + currentPlayer.getName()
+					+ " è passato dal VIA e ritira $200!\n");
+			currentPlayer.pickFromBank(200);
+		}
+
 		board.getBoxes().get(currentPlayer.getPosition()).onAction(currentPlayer);
 
 		if (!(lastEventString.equals(""))) {
-			lastEventTextArea.appendText(lastEventString + "\n");
+			lastEventTextArea.appendText("[" + currentPlayer.getName() + "] " + lastEventString + "\n");
 		}
 		lastEventString = "";
 

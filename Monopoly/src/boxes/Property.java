@@ -7,6 +7,7 @@ import application.ApplicationController;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.ButtonType;
+import logic.Board;
 import logic.Player;
 
 public class Property extends Box {
@@ -15,19 +16,17 @@ public class Property extends Box {
 	private PropertyState state;
 	private HashMap<PropertyState, Integer> rentPrice;
 	private Player owner;
+	private int[] sameGroupPositions;
+	private Board board;
 
-	public Property() {
-		super("DEFAULT_PROPERTY");
-		value = 0;
-		state = PropertyState.NO_OWNER;
-		rentPrice = new HashMap<PropertyState, Integer>();
-	}
-
-	public Property(String name, int value, PropertyState state, int noHousesRent, int allGroupRent, int oneHouseRent,
-			int twoHouseRent, int threeHouseRent, int fourHouseRent, int oneHotelRent) {
+	public Property(String name, int value, PropertyState state, int[] sameGroupPositions, int noHousesRent,
+			int allGroupRent, int oneHouseRent, int twoHouseRent, int threeHouseRent, int fourHouseRent,
+			int oneHotelRent, Board board) {
 		super(name);
 		this.value = value;
 		this.state = state;
+		this.sameGroupPositions = sameGroupPositions;
+		this.board = board;
 		this.rentPrice = new HashMap<PropertyState, Integer>();
 		setRentPrice(noHousesRent, allGroupRent, oneHouseRent, twoHouseRent, threeHouseRent, fourHouseRent,
 				oneHotelRent);
@@ -76,6 +75,14 @@ public class Property extends Box {
 		this.owner = owner;
 	}
 
+	public int[] getSameGroupPositions() {
+		return sameGroupPositions;
+	}
+
+	public void setSameGroupPositions(int[] sameGroupPositions) {
+		this.sameGroupPositions = sameGroupPositions;
+	}
+
 	@Override
 	public void onAction(Player player) {
 		if (state == PropertyState.MORTAGED) {
@@ -102,7 +109,6 @@ public class Property extends Box {
 						this.owner = player;
 						this.state = PropertyState.NO_HOUSES;
 						player.setProperties(player.getProperties() + 1);
-						return;
 					} else {
 						System.out.println("In teoria va all'asta");
 					}
@@ -114,13 +120,14 @@ public class Property extends Box {
 					this.owner = player;
 					this.state = PropertyState.NO_HOUSES;
 					player.setProperties(player.getProperties() + 1);
-					return;
 				}
+				checkAllGroup();
 			}
 
 		} else if (owner.equals(player)) {
 			// Il giocatore è il proprietario della proprietà
-			ApplicationController.lastEventString = "Il giocatore " + player.getName() + " è finito su una sua proprietà";
+			ApplicationController.lastEventString = "Il giocatore " + player.getName()
+					+ " è finito su una sua proprietà";
 			return;
 		} else {
 			ApplicationController.lastEventString = "Il giocatore " + player.getName() + " deve pagare "
@@ -128,6 +135,22 @@ public class Property extends Box {
 			player.payToPlayer(this.owner, this.rentPrice.get(this.state));
 			return;
 		}
+	}
+
+	private void checkAllGroup() {
+		for (int propertyIndex : sameGroupPositions) {
+			Property other = (Property) board.getBoxes().get(propertyIndex);
+			if (other.getOwner() == null || this.owner == null
+					|| !(other.getOwner().getName().equals(owner.getName()))) {
+				return;
+			}
+		}
+		for (int propertyIndex : sameGroupPositions) {
+			Property other = (Property) board.getBoxes().get(propertyIndex);
+			other.setState(PropertyState.ALL_GROUP);
+		}
+		this.state = PropertyState.ALL_GROUP;
+		System.out.println("tutto il gruppo");
 	}
 
 }

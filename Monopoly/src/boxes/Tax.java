@@ -1,5 +1,6 @@
 package boxes;
 
+import application.ApplicationController;
 import logic.Player;
 
 public class Tax extends Box {
@@ -7,10 +8,10 @@ public class Tax extends Box {
 	public Tax(String name) {
 		super(name);
 	}
-	
+
 	@Override
 	public void onAction(Player player) {
-		System.out.println("Tassa di:" + super.getName());
+		ApplicationController.lastEventString = this.getName() + ", il giocatore " + player.getName() + " paga $200";
 	}
 
 }

@@ -13,9 +13,8 @@ public class Unexpected extends Box {
 		int random = new Random().nextInt(10);
 		switch (random) {
 		case 0:
-			string = "Andate avanti fino al via e ritirate i $200";
-			player.setPosition(0);
-			player.pickFromBank(200);
+			string = "Spese scolastiche, pagate $150";
+			player.payToBank(150);
 			break;
 		case 1:
 			string = "Maturano le cedole delle vostre cartelle di rendita, ritirate $150";
@@ -26,16 +25,16 @@ public class Unexpected extends Box {
 			player.payToBank(15);
 			break;
 		case 3:
-			string = "Siete creditori verso la banca, ritirate $200";
-			player.pickFromBank(200);
+			string = "Avete vinto alla lotteria, ritirate $100";
+			player.pickFromBank(100);
 			break;
 		case 4:
-			string = "Pagate il conto del dottore $50, pagateli";
-			player.payToBank(50);
+			string = "La banca vi paga gli interessi del vostro conto corrente, ritirate $50";
+			player.pickFromBank(50);
 			break;
 		case 5:
-			string = "Decisione della Corte di Giustizia in vostro favore, ritirate $50";
-			player.pickFromBank(50);
+			string = "Versate $20 in beneficenza";
+			player.payToBank(20);
 			break;
 		case 6:
 			string = "Siete stato multato, pagate una multa di $10";

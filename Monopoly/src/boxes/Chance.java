@@ -13,9 +13,8 @@ public class Chance extends Box {
 		int random = new Random().nextInt(10);
 		switch (random) {
 		case 0:
-			string = "Andate fino al via e ritirate i $200";
-			player.setPosition(0);
-			player.pickFromBank(200);
+			string = "Ricevete un sussidio dall'UE, ritirate $20";
+			player.pickFromBank(20);
 			break;
 		case 1:
 			string = "Scade il premio dell'assicurazione, pagate $50";

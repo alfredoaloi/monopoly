@@ -7,13 +7,7 @@ public class Player {
 	private int position;
 	private int properties;
 	private boolean human;
-
-	public Player() {
-		name = "DEFAULT_NAME";
-		cash = 0;
-		position = 0;
-		properties = 0;
-	}
+	private int daysInPrison;
 
 	public Player(String name, int cash, boolean human) {
 		super();
@@ -22,6 +16,7 @@ public class Player {
 		this.human = human;
 		position = 0;
 		properties = 0;
+		daysInPrison = 0;
 	}
 
 	public String getName() {
@@ -62,6 +57,14 @@ public class Player {
 
 	public void setHuman(boolean human) {
 		this.human = human;
+	}
+
+	public int getDaysInPrison() {
+		return daysInPrison;
+	}
+
+	public void setDaysInPrison(int daysInPrison) {
+		this.daysInPrison = daysInPrison;
 	}
 
 	public void payToBank(int amount) {

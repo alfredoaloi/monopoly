@@ -18,10 +18,11 @@ public class Property extends Box {
 	private Player owner;
 	private int[] sameGroupPositions;
 	private Board board;
+	private int houseCost;
 
-	public Property(String name, int value, PropertyState state, int[] sameGroupPositions, int noHousesRent,
-			int allGroupRent, int oneHouseRent, int twoHouseRent, int threeHouseRent, int fourHouseRent,
-			int oneHotelRent, Board board) {
+	public Property(String name, int value, int houseCost, PropertyState state, int[] sameGroupPositions,
+			int noHousesRent, int allGroupRent, int oneHouseRent, int twoHouseRent, int threeHouseRent,
+			int fourHouseRent, int oneHotelRent, Board board) {
 		super(name);
 		this.value = value;
 		this.state = state;
@@ -30,6 +31,7 @@ public class Property extends Box {
 		this.rentPrice = new HashMap<PropertyState, Integer>();
 		setRentPrice(noHousesRent, allGroupRent, oneHouseRent, twoHouseRent, threeHouseRent, fourHouseRent,
 				oneHotelRent);
+		this.houseCost = houseCost;
 	}
 
 	public int getValue() {
@@ -81,6 +83,14 @@ public class Property extends Box {
 
 	public void setSameGroupPositions(int[] sameGroupPositions) {
 		this.sameGroupPositions = sameGroupPositions;
+	}
+
+	public int getHouseCost() {
+		return houseCost;
+	}
+
+	public void setHouseCost(int houseCost) {
+		this.houseCost = houseCost;
 	}
 
 	@Override

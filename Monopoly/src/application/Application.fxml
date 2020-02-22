@@ -544,7 +544,15 @@
                         <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
                      </VBox.margin>
                   </TextArea>
-                  <Button fx:id="continueButton" mnemonicParsing="false" onAction="#continueButtonAction" text="Continua" />
+                  <Button fx:id="continueButton" mnemonicParsing="false" onAction="#continueButtonAction" text="Lancia i dadi">
+                     <VBox.margin>
+                        <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                     </VBox.margin></Button>
+                  <Button fx:id="endTurnButton" mnemonicParsing="false" onAction="#endTurnButtonAction" text="Fine turno">
+                     <VBox.margin>
+                        <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                     </VBox.margin>
+                  </Button>
                </children>
             </VBox>
          </center>

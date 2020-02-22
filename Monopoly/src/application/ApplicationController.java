@@ -1,7 +1,11 @@
 package application;
 
 import java.util.ArrayList;
+import java.util.Optional;
 
+import boxes.Airport;
+import boxes.Property;
+import boxes.PropertyState;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -10,10 +14,13 @@ import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
 import javafx.scene.canvas.Canvas;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
+import javafx.scene.control.ButtonBar.ButtonData;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
-import javafx.scene.control.TextField;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
@@ -38,6 +45,9 @@ public class ApplicationController {
 
 	@FXML
 	private Button continueButton;
+
+	@FXML
+	private Button endTurnButton;
 
 	@FXML
 	private Label player1NameLabel;
@@ -117,16 +127,6 @@ public class ApplicationController {
 			stackPanes.add((StackPane) node);
 		}
 
-		for (StackPane stackPane : stackPanes) {
-			stackPane.setOnMouseClicked(new EventHandler<Event>() {
-
-				@Override
-				public void handle(Event event) {
-					System.out.println(stackPane.toString());
-				}
-			});
-		}
-
 		player1NameLabel.setText("Giocatore " + player1Name);
 		player2NameLabel.setText("Giocatore " + player2Name);
 		player3NameLabel.setText("Giocatore " + player3Name);
@@ -165,6 +165,105 @@ public class ApplicationController {
 		canvas.getGraphicsContext2D().fillRect(5, canvas.getHeight() - 5 - 20, 20, 20);
 		canvas.getGraphicsContext2D().setFill(Color.YELLOW);
 		canvas.getGraphicsContext2D().fillRect(canvas.getWidth() - 5 - 20, canvas.getHeight() - 5 - 20, 20, 20);
+
+		for (int i = 0; i < stackPanes.size(); i++) {
+			final int j = i;
+			stackPanes.get(i).setOnMouseClicked(new EventHandler<Event>() {
+
+				@Override
+				public void handle(Event event) {
+					if (board.getCurrentPlayer().isHuman()) {
+						if (board.getBoxes().get(j) instanceof Property) {
+							Property property = (Property) board.getBoxes().get(j);
+							Alert alert = new Alert(AlertType.NONE);
+							alert.setTitle(board.getBoxes().get(j).getName());
+							alert.setHeaderText(null);
+							alert.setContentText("Valore :" + property.getValue() + "\nProprietario: "
+									+ (property.getOwner() == null ? "Nessuno" : property.getOwner().getName())
+									+ "\nStato: " + property.getState());
+
+							if (property.getOwner() != null
+									&& property.getOwner().getName().equals(board.getCurrentPlayer().getName())) {
+								ButtonType addHouse = null;
+								ButtonType delHouse = null;
+								if (property.getState() != PropertyState.MORTAGED
+										&& property.getState() != PropertyState.NO_HOUSES) {
+									addHouse = new ButtonType("Aggiungi casa: -$" + property.getHouseCost());
+									delHouse = new ButtonType("Rimuovi casa: +$" + property.getHouseCost() / 2);
+									alert.getButtonTypes().addAll(addHouse, delHouse);
+								}
+								ButtonType mortage;
+								if (property.getState() == PropertyState.MORTAGED) {
+									mortage = new ButtonType("Riacquista: -$" + property.getValue() / 2);
+								} else {
+									mortage = new ButtonType("Ipoteca: +$" + property.getValue() / 2);
+								}
+								ButtonType cancel = new ButtonType("Annulla", ButtonData.CANCEL_CLOSE);
+
+								alert.getButtonTypes().addAll(mortage, cancel);
+
+								Optional<ButtonType> result = alert.showAndWait();
+								if (result.get() == addHouse) {
+									if (property.getState() == PropertyState.ONE_HOTEL) {
+										Alert confAlert = new Alert(AlertType.ERROR);
+										confAlert.setTitle("ERRORE");
+										confAlert.setHeaderText(null);
+										confAlert.setContentText("Non puoi aggiungere altre case, ce ne sono troppe.");
+										confAlert.showAndWait();
+									} else if (board.getCurrentPlayer().getCash() < property.getHouseCost()) {
+										Alert confAlert = new Alert(AlertType.ERROR);
+										confAlert.setTitle("ERRORE");
+										confAlert.setHeaderText(null);
+										confAlert.setContentText(
+												"Non puoi aggiungere una casa, non hai abbastanza soldi.");
+										confAlert.showAndWait();
+									} else {
+										Alert confAlert = new Alert(AlertType.CONFIRMATION);
+										confAlert.setTitle("ACQUISTO CASA");
+										confAlert.setHeaderText(null);
+										confAlert.setContentText(
+												"Sei sicuro di voler acquistare una casa a " + property.getName()
+														+ " per la modica cifra di " + property.getHouseCost() + "?");
+										Optional<ButtonType> confResult = confAlert.showAndWait();
+										if (confResult.get() == ButtonType.OK) {
+											board.getCurrentPlayer().buyHouse(property);
+										}
+									}
+								} else if (result.get() == delHouse) {
+									Alert confAlert = new Alert(AlertType.ERROR);
+									confAlert.setTitle("ERRORE");
+									confAlert.setHeaderText(null);
+									confAlert.setContentText("Non puoi aggiungere altre 2, ce ne sono troppe.");
+									confAlert.showAndWait();
+								} else if (result.get() == mortage) {
+									Alert confAlert = new Alert(AlertType.ERROR);
+									confAlert.setTitle("ERRORE");
+									confAlert.setHeaderText(null);
+									confAlert.setContentText("Non puoi aggiungere altre 3, ce ne sono troppe.");
+									confAlert.showAndWait();
+								} else {
+								}
+							} else {
+								ButtonType cancel = new ButtonType("Annulla", ButtonData.CANCEL_CLOSE);
+								alert.getButtonTypes().add(cancel);
+								alert.showAndWait();
+							}
+
+						} else if (board.getBoxes().get(j) instanceof Airport) {
+							Alert alert = new Alert(AlertType.INFORMATION);
+							alert.setTitle(board.getBoxes().get(j).getName());
+							alert.setHeaderText(null);
+							alert.setContentText("qualcosa di articolato con botttoni ecc");
+							alert.showAndWait();
+						}
+					}
+					refresh();
+				}
+			});
+		}
+
+		endTurnButton.setDisable(true);
+
 	}
 
 	@FXML
@@ -365,6 +464,35 @@ public class ApplicationController {
 		}
 		lastEventString = "";
 
+		refresh();
+
+		currentPlayerLabel.setText("Turno del giocatore " + board.getCurrentPlayer().getName());
+
+		endTurnButton.setDisable(false);
+		continueButton.setDisable(true);
+
+		for (Player player : board.getPlayers()) {
+			if (player.getCash() < 0) {
+				lastEventTextArea.appendText("Il gioco è finito");
+				continueButton.setDisable(true);
+				return;
+			}
+		}
+		
+		// TODO L'itelligenza fa scambi, compra case ecc
+	}
+
+	@FXML
+	void endTurnButtonAction(ActionEvent event) {
+		board.nextPlayer();
+
+		currentPlayerLabel.setText("Prossimo turno del giocatore " + board.getCurrentPlayer().getName());
+
+		endTurnButton.setDisable(true);
+		continueButton.setDisable(false);
+	}
+
+	private void refresh() {
 		player1CashLabel.setText("Cash " + board.getPlayers().get(0).getCash());
 		player2CashLabel.setText("Cash " + board.getPlayers().get(1).getCash());
 		player3CashLabel.setText("Cash " + board.getPlayers().get(2).getCash());
@@ -374,20 +502,6 @@ public class ApplicationController {
 		player2PropertiesLabel.setText("Proprietà " + board.getPlayers().get(1).getProperties());
 		player3PropertiesLabel.setText("Proprietà " + board.getPlayers().get(2).getProperties());
 		player4PropertiesLabel.setText("Proprietà " + board.getPlayers().get(3).getProperties());
-
-		// altre cose
-
-		for (Player player : board.getPlayers()) {
-			if (player.getCash() < 0) {
-				lastEventTextArea.appendText("Il gioco è finito");
-				continueButton.setDisable(true);
-				return;
-			}
-		}
-
-		board.nextPlayer();
-
-		currentPlayerLabel.setText("Prossimo turno del giocatore " + board.getCurrentPlayer().getName());
 	}
 
 }

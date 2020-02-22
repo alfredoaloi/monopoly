@@ -1,5 +1,8 @@
 package logic;
 
+import boxes.Property;
+import boxes.PropertyState;
+
 public class Player {
 
 	private String name;
@@ -78,6 +81,21 @@ public class Player {
 	public void payToPlayer(Player player, int amount) {
 		this.cash -= amount;
 		player.cash += amount;
+	}
+
+	public void buyHouse(Property property) {
+		this.cash -= property.getHouseCost();
+		if (property.getState() == PropertyState.ALL_GROUP) {
+			property.setState(PropertyState.ONE_HOUSE);
+		} else if (property.getState() == PropertyState.ONE_HOUSE) {
+			property.setState(PropertyState.TWO_HOUSES);
+		} else if (property.getState() == PropertyState.TWO_HOUSES) {
+			property.setState(PropertyState.THREE_HOUSES);
+		} else if (property.getState() == PropertyState.THREE_HOUSES) {
+			property.setState(PropertyState.FOUR_HOUSES);
+		} else if (property.getState() == PropertyState.FOUR_HOUSES) {
+			property.setState(PropertyState.ONE_HOTEL);
+		}
 	}
 
 }

@@ -4,7 +4,7 @@ import logic.Player;
 
 public abstract class Box {
 
-	private String name;
+	private String name = "";
 
 	public Box() {
 	}

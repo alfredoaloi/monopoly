@@ -1,5 +1,9 @@
 package logic;
 
+import java.util.ArrayList;
+
+import boxes.Airport;
+import boxes.AirportState;
 import boxes.Property;
 import boxes.PropertyState;
 
@@ -96,6 +100,48 @@ public class Player {
 		} else if (property.getState() == PropertyState.FOUR_HOUSES) {
 			property.setState(PropertyState.ONE_HOTEL);
 		}
+	}
+
+	public void sellHouse(Property property) {
+		this.cash += (property.getHouseCost() / 2);
+		if (property.getState() == PropertyState.ONE_HOUSE) {
+			property.setState(PropertyState.ALL_GROUP);
+		} else if (property.getState() == PropertyState.TWO_HOUSES) {
+			property.setState(PropertyState.ONE_HOUSE);
+		} else if (property.getState() == PropertyState.THREE_HOUSES) {
+			property.setState(PropertyState.TWO_HOUSES);
+		} else if (property.getState() == PropertyState.FOUR_HOUSES) {
+			property.setState(PropertyState.THREE_HOUSES);
+		} else if (property.getState() == PropertyState.ONE_HOTEL) {
+			property.setState(PropertyState.FOUR_HOUSES);
+		}
+	}
+
+	public void mortageProperty(Property property) {
+		this.cash += (property.getValue() / 2);
+		property.setState(PropertyState.MORTAGED);
+	}
+
+	public void unMortageProperty(Property property) {
+		this.cash -= (property.getValue() / 2);
+		property.setState(PropertyState.NO_HOUSES);
+		property.checkAllGroup();
+	}
+
+	public void mortageAirport(Airport airport) {
+		this.cash += (airport.getValue() / 2);
+		airport.setState(AirportState.MORTAGED);
+	}
+
+	public void unMortageAirport(Airport airport) {
+		this.cash -= (airport.getValue() / 2);
+		airport.setState(AirportState.ONE_AIRPORT);
+		airport.checkAllGroup();
+	}
+
+	public boolean manageExchange(int myCashOffer, int hisCashOffer, ArrayList<Property> myProperties,
+			ArrayList<Airport> myAirports, ArrayList<Property> hisProperties, ArrayList<Airport> hisAirports) {
+		return true;
 	}
 
 }

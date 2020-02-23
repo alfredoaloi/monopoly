@@ -147,7 +147,7 @@ public class Property extends Box {
 		}
 	}
 
-	private void checkAllGroup() {
+	public void checkAllGroup() {
 		for (int propertyIndex : sameGroupPositions) {
 			Property other = (Property) board.getBoxes().get(propertyIndex);
 			if (other.getOwner() == null || this.owner == null
@@ -157,7 +157,9 @@ public class Property extends Box {
 		}
 		for (int propertyIndex : sameGroupPositions) {
 			Property other = (Property) board.getBoxes().get(propertyIndex);
-			other.setState(PropertyState.ALL_GROUP);
+			if (other.getState() == PropertyState.NO_HOUSES) {
+				other.setState(PropertyState.ALL_GROUP);
+			}
 		}
 		this.state = PropertyState.ALL_GROUP;
 		System.out.println("tutto il gruppo");

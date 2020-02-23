@@ -140,7 +140,7 @@ public class Airport extends Box {
 		}
 	}
 
-	private void checkAllGroup() {
+	public void checkAllGroup() {
 		int count = 1;
 		for (int propertyIndex : sameGroupPositions) {
 			Airport other = (Airport) board.getBoxes().get(propertyIndex);
@@ -151,7 +151,9 @@ public class Airport extends Box {
 		for (int propertyIndex : sameGroupPositions) {
 			Airport other = (Airport) board.getBoxes().get(propertyIndex);
 			if (other.getOwner() != null) {
-				other.setState(AirportState.values()[count]);
+				if (other.getState() != AirportState.MORTAGED) {
+					other.setState(AirportState.values()[count]);
+				}
 			}
 		}
 		this.state = AirportState.values()[count];

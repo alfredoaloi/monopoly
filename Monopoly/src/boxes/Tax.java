@@ -11,6 +11,7 @@ public class Tax extends Box {
 
 	@Override
 	public void onAction(Player player) {
+		player.setCash(player.getCash() - 200);
 		ApplicationController.lastEventString = this.getName() + ", il giocatore " + player.getName() + " paga $200";
 	}
 

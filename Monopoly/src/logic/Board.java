@@ -1,7 +1,9 @@
 package logic;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 
+import application.ApplicationController;
 import boxes.Airport;
 import boxes.AirportState;
 import boxes.Box;
@@ -159,6 +161,53 @@ public class Board {
 
 	public void nextPlayer() {
 		currentPlayerIndex = (currentPlayerIndex + 1) % 4;
+	}
+
+	public void finalPlacement() {
+		for (Player player : players) {
+			for (Box box : boxes) {
+				if (box instanceof Property) {
+					Property property = (Property) box;
+					if (property.getOwner() != null && property.getOwner().getName().equals(player.getName())) {
+						while (property.getState() != PropertyState.NO_HOUSES
+								&& property.getState() != PropertyState.ALL_GROUP
+								&& property.getState() != PropertyState.MORTAGED) {
+							player.sellHouse(property);
+						}
+						if (property.getState() == PropertyState.MORTAGED) {
+							player.setCash(player.getCash() + (property.getValue() / 2));
+						} else {
+							player.setCash(player.getCash() + property.getValue());
+						}
+					}
+				} else if (box instanceof Airport) {
+					Airport airport = (Airport) box;
+					if (airport.getOwner() != null && airport.getOwner().getName().equals(player.getName())) {
+						if (airport.getState() == AirportState.MORTAGED) {
+							player.setCash(player.getCash() + (airport.getValue() / 2));
+						} else {
+							player.setCash(player.getCash() + airport.getValue());
+						}
+					}
+				}
+			}
+		}
+
+		players.sort(new Comparator<Player>() {
+
+			@Override
+			public int compare(Player o1, Player o2) {
+				return -(new Integer(o1.getCash()).compareTo(o2.getCash()));
+			}
+		});
+
+		StringBuilder builder = new StringBuilder();
+		int cont = 1;
+		for (Player player : players) {
+			builder.append(cont + "° - " + player.getName() + " - $" + player.getCash() + "\n");
+			cont++;
+		}
+		ApplicationController.lastEventString = builder.toString();
 	}
 
 }

@@ -2,8 +2,10 @@ package logic;
 
 import java.util.ArrayList;
 
+import application.ApplicationController;
 import boxes.Airport;
 import boxes.AirportState;
+import boxes.Box;
 import boxes.Property;
 import boxes.PropertyState;
 
@@ -142,6 +144,54 @@ public class Player {
 	public boolean manageExchange(int myCashOffer, int hisCashOffer, ArrayList<Property> myProperties,
 			ArrayList<Airport> myAirports, ArrayList<Property> hisProperties, ArrayList<Airport> hisAirports) {
 		return true;
+	}
+
+	public void tryToSaveYourself(Board board) {
+		StringBuilder builder = new StringBuilder();
+		for (Box box : board.getBoxes()) {
+			if (box instanceof Property) {
+				Property property = (Property) box;
+				if (property.getOwner() != null && property.getOwner().getName().equals(this.getName())) {
+					while (property.getState() != PropertyState.NO_HOUSES
+							&& property.getState() != PropertyState.ALL_GROUP
+							&& property.getState() != PropertyState.MORTAGED) {
+						sellHouse(property);
+						builder.append(
+								"Il giocatore " + this.name + " ha venduto una casa a " + property.getName() + "\n");
+						if (this.cash > 0) {
+							builder.append("Il giocatore " + this.name + " ha racimolato abbastanza soldi!\n");
+							ApplicationController.lastEventString = builder.toString();
+							return;
+						}
+					}
+					mortageProperty(property);
+					builder.append(
+							"Il giocatore " + this.name + " ha ipotecato la proprietà " + property.getName() + "\n");
+					if (this.cash > 0) {
+						builder.append("Il giocatore " + this.name + " ha racimolato abbastanza soldi!\n");
+						ApplicationController.lastEventString = builder.toString();
+						return;
+					}
+				}
+			} else if (box instanceof Airport) {
+				Airport airport = (Airport) box;
+				if (airport.getOwner() != null && airport.getOwner().getName().equals(this.getName())
+						&& airport.getState() != AirportState.MORTAGED) {
+					mortageAirport(airport);
+					builder.append(
+							"Il giocatore " + this.name + " ha ipotecato l'aereoporto " + airport.getName() + "\n");
+					if (this.cash > 0) {
+						builder.append("Il giocatore " + this.name + " ha racimolato abbastanza soldi!\n");
+						ApplicationController.lastEventString = builder.toString();
+						return;
+					}
+				}
+			}
+		}
+		if (this.cash < 0) {
+			builder.append("Il giocatore " + this.name + " non ce la fa a racimolare altri soldi!\n");
+			ApplicationController.lastEventString = builder.toString();
+		}
 	}
 
 }

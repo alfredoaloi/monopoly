@@ -156,10 +156,10 @@ public class ApplicationController {
 
 		board = new Board();
 		board.createBoard();
-		Player player1 = new Player(player1Name, 1500, true);
-		Player player2 = new Player(player2Name, 1500, false);
-		Player player3 = new Player(player3Name, 1500, false);
-		Player player4 = new Player(player4Name, 1500, false);
+		Player player1 = new Player(player1Name, 112345, true);
+		Player player2 = new Player(player2Name, 1, false);
+		Player player3 = new Player(player3Name, 1, false);
+		Player player4 = new Player(player4Name, 1, false);
 		board.getPlayers().add(player1);
 		board.getPlayers().add(player2);
 		board.getPlayers().add(player3);
@@ -566,19 +566,34 @@ public class ApplicationController {
 		endTurnButton.setDisable(false);
 		continueButton.setDisable(true);
 
-		for (Player player : board.getPlayers()) {
-			if (player.getCash() < 0) {
-				lastEventTextArea.appendText("Il gioco è finito");
-				continueButton.setDisable(true);
-				return;
+		if (currentPlayer.getCash() < 0) {
+			lastEventTextArea.appendText("Il giocatore " + currentPlayer.getName()
+					+ " non ha abbastanza soldi, deve vendere case e/o ipotecare qualche proprietà\n");
+			if (!(currentPlayer.isHuman())) {
+				currentPlayer.tryToSaveYourself(board);
+				lastEventTextArea.appendText(lastEventString);
 			}
 		}
+		refresh();
 
 		// TODO L'itelligenza fa scambi, compra case ecc
 	}
 
 	@FXML
 	void endTurnButtonAction(ActionEvent event) {
+		if (board.getCurrentPlayer().getCash() < 0) {
+			lastEventTextArea.appendText(
+					"Il giocatore " + board.getCurrentPlayer().getName() + " è in bancarotta, il gioco è finito\n");
+
+			board.finalPlacement();
+			lastEventTextArea.appendText(lastEventString);
+
+			continueButton.setDisable(true);
+			endTurnButton.setDisable(true);
+			exchangeButton.setVisible(false);
+			return;
+		}
+
 		board.nextPlayer();
 
 		currentPlayerLabel.setText("Prossimo turno del giocatore " + board.getCurrentPlayer().getName());
@@ -737,10 +752,6 @@ public class ApplicationController {
 							}
 						}
 					}
-					System.out.println(myProperties);
-					System.out.println(myAirports);
-					System.out.println(hisProperties);
-					System.out.println(hisAirports);
 
 					if (otherPlayer.manageExchange(myCashOffer, hisCashOffer, myProperties, myAirports, hisProperties,
 							hisAirports)) {

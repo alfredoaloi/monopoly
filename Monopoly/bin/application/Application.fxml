@@ -1,0 +1,566 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.*?>
+<?import javafx.scene.canvas.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.*?>
+<?import java.lang.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.layout.AnchorPane?>
+
+<AnchorPane xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="application.ApplicationController">
+   <children>
+      <BorderPane>
+         <bottom>
+            <HBox fx:id="south" BorderPane.alignment="CENTER">
+               <children>
+                  <StackPane>
+                     <children>
+                        <ImageView fitHeight="100.0" fitWidth="100.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@../../res/images/board_images/prigione.png" />
+                           </image>
+                        </ImageView>
+                        <Canvas height="100.0" width="100.0" />
+                     </children>
+                  </StackPane>
+                  <StackPane>
+                     <children>
+                        <ImageView fitHeight="100.0" fitWidth="67.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@../../res/images/board_images/torino.png" />
+                           </image>
+                        </ImageView>
+                        <Canvas height="100.0" width="67.0" />
+                     </children>
+                  </StackPane>
+                  <StackPane>
+                     <children>
+                        <ImageView fitHeight="100.0" fitWidth="67.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@../../res/images/board_images/trani.png" />
+                           </image>
+                        </ImageView>
+                        <Canvas height="100.0" width="67.0" />
+                     </children>
+                  </StackPane>
+                  <StackPane>
+                     <children>
+                        <ImageView fitHeight="100.0" fitWidth="67.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@../../res/images/board_images/imprevisti_1.png" />
+                           </image>
+                        </ImageView>
+                        <Canvas height="100.0" width="67.0" />
+                     </children>
+                  </StackPane>
+                  <StackPane>
+                     <children>
+                        <ImageView fitHeight="100.0" fitWidth="67.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@../../res/images/board_images/aquila.png" />
+                           </image>
+                        </ImageView>
+                        <Canvas height="100.0" width="67.0" />
+                     </children>
+                  </StackPane>
+                  <StackPane>
+                     <children>
+                        <ImageView fitHeight="100.0" fitWidth="67.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@../../res/images/board_images/aereoporto_napoli_capodichino.png" />
+                           </image>
+                        </ImageView>
+                        <Canvas height="100.0" width="67.0" />
+                     </children>
+                  </StackPane>
+                  <StackPane>
+                     <children>
+                        <ImageView fitHeight="100.0" fitWidth="67.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@../../res/images/board_images/tassa_patrimoniale.png" />
+                           </image>
+                        </ImageView>
+                        <Canvas height="100.0" width="67.0" />
+                     </children>
+                  </StackPane>
+                  <StackPane>
+                     <children>
+                        <ImageView fitHeight="100.0" fitWidth="67.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@../../res/images/board_images/sanremo.png" />
+                           </image>
+                        </ImageView>
+                        <Canvas height="100.0" width="67.0" />
+                     </children>
+                  </StackPane>
+                  <StackPane>
+                     <children>
+                        <ImageView fitHeight="100.0" fitWidth="67.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@../../res/images/board_images/probabilita_1.png" />
+                           </image>
+                        </ImageView>
+                        <Canvas height="100.0" width="67.0" />
+                     </children>
+                  </StackPane>
+                  <StackPane>
+                     <children>
+                        <ImageView fitHeight="100.0" fitWidth="67.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@../../res/images/board_images/teramo.png" />
+                           </image>
+                        </ImageView>
+                        <Canvas height="100.0" width="67.0" />
+                     </children>
+                  </StackPane>
+                  <StackPane>
+                     <children>
+                        <ImageView fitHeight="100.0" fitWidth="100.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@../../res/images/board_images/via.png" />
+                           </image>
+                        </ImageView>
+                        <Canvas height="100.0" width="100.0" />
+                     </children>
+                  </StackPane>
+               </children>
+            </HBox>
+         </bottom>
+         <top>
+            <HBox fx:id="north" BorderPane.alignment="CENTER">
+               <children>
+                  <StackPane>
+                     <children>
+                        <ImageView fitHeight="100.0" fitWidth="100.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@../../res/images/board_images/parcheggio_gratuito.png" />
+                           </image>
+                        </ImageView>
+                        <Canvas height="100.0" width="100.0" />
+                     </children>
+                  </StackPane>
+                  <StackPane>
+                     <children>
+                        <ImageView fitHeight="100.0" fitWidth="67.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@../../res/images/board_images/caserta.png" />
+                           </image>
+                        </ImageView>
+                        <Canvas height="100.0" width="67.0" />
+                     </children>
+                  </StackPane>
+                  <StackPane>
+                     <children>
+                        <ImageView fitHeight="100.0" fitWidth="67.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@../../res/images/board_images/brindisi.png" />
+                           </image>
+                        </ImageView>
+                        <Canvas height="100.0" width="67.0" />
+                     </children>
+                  </StackPane>
+                  <StackPane>
+                     <children>
+                        <ImageView fitHeight="100.0" fitWidth="67.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@../../res/images/board_images/imprevisti_2.png" />
+                           </image>
+                        </ImageView>
+                        <Canvas height="100.0" width="67.0" />
+                     </children>
+                  </StackPane>
+                  <StackPane>
+                     <children>
+                        <ImageView fitHeight="100.0" fitWidth="67.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@../../res/images/board_images/ischia.png" />
+                           </image>
+                        </ImageView>
+                        <Canvas height="100.0" width="67.0" />
+                     </children>
+                  </StackPane>
+                  <StackPane>
+                     <children>
+                        <ImageView fitHeight="100.0" fitWidth="67.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@../../res/images/board_images/aereoporto_milano_malpensa.png" />
+                           </image>
+                        </ImageView>
+                        <Canvas height="100.0" width="67.0" />
+                     </children>
+                  </StackPane>
+                  <StackPane>
+                     <children>
+                        <ImageView fitHeight="100.0" fitWidth="67.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@../../res/images/board_images/monopoli.png" />
+                           </image>
+                        </ImageView>
+                        <Canvas height="100.0" width="67.0" />
+                     </children>
+                  </StackPane>
+                  <StackPane>
+                     <children>
+                        <ImageView fitHeight="100.0" fitWidth="67.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@../../res/images/board_images/ascoli_piceno.png" />
+                           </image>
+                        </ImageView>
+                        <Canvas height="100.0" width="67.0" />
+                     </children>
+                  </StackPane>
+                  <StackPane>
+                     <children>
+                        <ImageView fitHeight="100.0" fitWidth="67.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@../../res/images/board_images/imprevisti_2.png" />
+                           </image>
+                        </ImageView>
+                        <Canvas height="100.0" width="67.0" />
+                     </children>
+                  </StackPane>
+                  <StackPane>
+                     <children>
+                        <ImageView fitHeight="100.0" fitWidth="67.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@../../res/images/board_images/elba.png" />
+                           </image>
+                        </ImageView>
+                        <Canvas height="100.0" width="67.0" />
+                     </children>
+                  </StackPane>
+                  <StackPane>
+                     <children>
+                        <ImageView fitHeight="100.0" fitWidth="100.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@../../res/images/board_images/in_prigione.png" />
+                           </image>
+                        </ImageView>
+                        <Canvas height="100.0" width="100.0" />
+                     </children>
+                  </StackPane>
+               </children>
+            </HBox>
+         </top>
+         <left>
+            <VBox fx:id="west" BorderPane.alignment="CENTER">
+               <children>
+                  <StackPane>
+                     <children>
+                        <ImageView fitHeight="67.0" fitWidth="100.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@../../res/images/board_images/foggia.png" />
+                           </image>
+                        </ImageView>
+                        <Canvas height="67.0" width="100.0" />
+                     </children>
+                  </StackPane>
+                  <StackPane>
+                     <children>
+                        <ImageView fitHeight="67.0" fitWidth="100.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@../../res/images/board_images/messina.png" />
+                           </image>
+                        </ImageView>
+                        <Canvas height="67.0" width="100.0" />
+                     </children>
+                  </StackPane>
+                  <StackPane>
+                     <children>
+                        <ImageView fitHeight="67.0" fitWidth="100.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@../../res/images/board_images/probabilita_2.png" />
+                           </image>
+                        </ImageView>
+                        <Canvas height="67.0" width="100.0" />
+                     </children>
+                  </StackPane>
+                  <StackPane>
+                     <children>
+                        <ImageView fitHeight="67.0" fitWidth="100.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@../../res/images/board_images/terni.png" />
+                           </image>
+                        </ImageView>
+                        <Canvas height="67.0" width="100.0" />
+                     </children>
+                  </StackPane>
+                  <StackPane>
+                     <children>
+                        <ImageView fitHeight="67.0" fitWidth="100.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@../../res/images/board_images/aereoporto_catania.png" />
+                           </image>
+                        </ImageView>
+                        <Canvas height="67.0" width="100.0" />
+                     </children>
+                  </StackPane>
+                  <StackPane>
+                     <children>
+                        <ImageView fitHeight="67.0" fitWidth="100.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@../../res/images/board_images/viareggio.png" />
+                           </image>
+                        </ImageView>
+                        <Canvas height="67.0" width="100.0" />
+                     </children>
+                  </StackPane>
+                  <StackPane>
+                     <children>
+                        <ImageView fitHeight="67.0" fitWidth="100.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@../../res/images/board_images/milano.png" />
+                           </image>
+                        </ImageView>
+                        <Canvas height="67.0" width="100.0" />
+                     </children>
+                  </StackPane>
+                  <StackPane>
+                     <children>
+                        <ImageView fitHeight="67.0" fitWidth="100.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@../../res/images/board_images/probabilita_2.png" />
+                           </image>
+                        </ImageView>
+                        <Canvas height="67.0" width="100.0" />
+                     </children>
+                  </StackPane>
+                  <StackPane>
+                     <children>
+                        <ImageView fitHeight="67.0" fitWidth="100.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@../../res/images/board_images/cosenza.png" />
+                           </image>
+                        </ImageView>
+                        <Canvas height="67.0" width="100.0" />
+                     </children>
+                  </StackPane>
+               </children>
+            </VBox>
+         </left>
+         <right>
+            <VBox fx:id="east" BorderPane.alignment="CENTER">
+               <children>
+                  <StackPane>
+                     <children>
+                        <ImageView fitHeight="67.0" fitWidth="100.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@../../res/images/board_images/andria.png" />
+                           </image>
+                        </ImageView>
+                        <Canvas height="67.0" width="100.0" />
+                     </children>
+                  </StackPane>
+                  <StackPane>
+                     <children>
+                        <ImageView fitHeight="67.0" fitWidth="100.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@../../res/images/board_images/barletta.png" />
+                           </image>
+                        </ImageView>
+                        <Canvas height="67.0" width="100.0" />
+                     </children>
+                  </StackPane>
+                  <StackPane>
+                     <children>
+                        <ImageView fitHeight="67.0" fitWidth="100.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@../../res/images/board_images/probabilita_3.png" />
+                           </image>
+                        </ImageView>
+                        <Canvas height="67.0" width="100.0" />
+                     </children>
+                  </StackPane>
+                  <StackPane>
+                     <children>
+                        <ImageView fitHeight="67.0" fitWidth="100.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@../../res/images/board_images/firenze.png" />
+                           </image>
+                        </ImageView>
+                        <Canvas height="67.0" width="100.0" />
+                     </children>
+                  </StackPane>
+                  <StackPane>
+                     <children>
+                        <ImageView fitHeight="67.0" fitWidth="100.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@../../res/images/board_images/aereoporto_roma_fiumicino.png" />
+                           </image>
+                        </ImageView>
+                        <Canvas height="67.0" width="100.0" />
+                     </children>
+                  </StackPane>
+                  <StackPane>
+                     <children>
+                        <ImageView fitHeight="67.0" fitWidth="100.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@../../res/images/board_images/imprevisti_3.png" />
+                           </image>
+                        </ImageView>
+                        <Canvas height="67.0" width="100.0" />
+                     </children>
+                  </StackPane>
+                  <StackPane>
+                     <children>
+                        <ImageView fitHeight="67.0" fitWidth="100.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@../../res/images/board_images/reggio_calabria.png" />
+                           </image>
+                        </ImageView>
+                        <Canvas height="67.0" width="100.0" />
+                     </children>
+                  </StackPane>
+                  <StackPane>
+                     <children>
+                        <ImageView fitHeight="67.0" fitWidth="100.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@../../res/images/board_images/tassa_di_lusso.png" />
+                           </image>
+                        </ImageView>
+                        <Canvas height="67.0" width="100.0" />
+                     </children>
+                  </StackPane>
+                  <StackPane>
+                     <children>
+                        <ImageView fitHeight="67.0" fitWidth="100.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@../../res/images/board_images/chieti.png" />
+                           </image>
+                        </ImageView>
+                        <Canvas height="67.0" width="100.0" />
+                     </children>
+                  </StackPane>
+               </children>
+            </VBox>
+         </right>
+         <center>
+            <VBox alignment="CENTER" prefHeight="200.0" prefWidth="100.0" BorderPane.alignment="CENTER">
+               <children>
+                  <Label fx:id="currentPlayerLabel" text="Label">
+                     <VBox.margin>
+                        <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                     </VBox.margin>
+                  </Label>
+                  <GridPane>
+                    <columnConstraints>
+                      <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                      <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                    </columnConstraints>
+                    <rowConstraints>
+                      <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                      <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                    </rowConstraints>
+                     <VBox.margin>
+                        <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                     </VBox.margin>
+                     <children>
+                        <HBox prefHeight="100.0" prefWidth="200.0">
+                           <children>
+                              <Label fx:id="player1NameLabel" text="Label">
+                                 <HBox.margin>
+                                    <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                                 </HBox.margin>
+                              </Label>
+                              <Label fx:id="player1CashLabel" text="Label">
+                                 <HBox.margin>
+                                    <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                                 </HBox.margin>
+                              </Label>
+                              <Label fx:id="player1PropertiesLabel" text="Label">
+                                 <HBox.margin>
+                                    <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                                 </HBox.margin>
+                              </Label>
+                           </children>
+                        </HBox>
+                        <HBox alignment="TOP_RIGHT" prefHeight="100.0" prefWidth="200.0" GridPane.columnIndex="1">
+                           <children>
+                              <Label fx:id="player2NameLabel" text="Label">
+                                 <HBox.margin>
+                                    <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                                 </HBox.margin>
+                              </Label>
+                              <Label fx:id="player2CashLabel" text="Label">
+                                 <HBox.margin>
+                                    <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                                 </HBox.margin>
+                              </Label>
+                              <Label fx:id="player2PropertiesLabel" text="Label">
+                                 <HBox.margin>
+                                    <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                                 </HBox.margin>
+                              </Label>
+                           </children>
+                        </HBox>
+                        <HBox prefHeight="100.0" prefWidth="200.0" GridPane.rowIndex="1">
+                           <children>
+                              <Label fx:id="player3NameLabel" text="Label">
+                                 <HBox.margin>
+                                    <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                                 </HBox.margin>
+                              </Label>
+                              <Label fx:id="player3CashLabel" text="Label">
+                                 <HBox.margin>
+                                    <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                                 </HBox.margin>
+                              </Label>
+                              <Label fx:id="player3PropertiesLabel" text="Label">
+                                 <HBox.margin>
+                                    <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                                 </HBox.margin>
+                              </Label>
+                           </children>
+                        </HBox>
+                        <HBox alignment="TOP_RIGHT" prefHeight="100.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="1">
+                           <children>
+                              <Label fx:id="player4NameLabel" text="Label">
+                                 <HBox.margin>
+                                    <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                                 </HBox.margin>
+                              </Label>
+                              <Label fx:id="player4CashLabel" text="Label">
+                                 <HBox.margin>
+                                    <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                                 </HBox.margin>
+                              </Label>
+                              <Label fx:id="player4PropertiesLabel" text="Label">
+                                 <HBox.margin>
+                                    <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                                 </HBox.margin>
+                              </Label>
+                           </children>
+                        </HBox>
+                     </children>
+                  </GridPane>
+                  <Label text="ULTIMO EVENTO">
+                     <VBox.margin>
+                        <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                     </VBox.margin>
+                  </Label>
+                  <TextArea fx:id="lastEventTextArea" editable="false" prefHeight="200.0" prefWidth="200.0" wrapText="true">
+                     <VBox.margin>
+                        <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                     </VBox.margin>
+                  </TextArea>
+                  <Button fx:id="continueButton" mnemonicParsing="false" onAction="#continueButtonAction" text="Lancia i dadi">
+                     <VBox.margin>
+                        <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                     </VBox.margin></Button>
+                  <Button fx:id="endTurnButton" mnemonicParsing="false" onAction="#endTurnButtonAction" text="Fine turno">
+                     <VBox.margin>
+                        <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                     </VBox.margin>
+                  </Button>
+                  <Button fx:id="exchangeButton" mnemonicParsing="false" onAction="#exchangeButtonAction" text="Fai uno scambio">
+                     <VBox.margin>
+                        <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                     </VBox.margin>
+                  </Button>
+               </children>
+            </VBox>
+         </center>
+      </BorderPane>
+   </children>
+</AnchorPane>

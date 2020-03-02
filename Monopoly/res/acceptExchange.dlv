@@ -1,0 +1,99 @@
+accept | noAccept.
+
+% 1 Confronto valore offerto e valore di quello che devo dare
+totalCost(C) :- accept, offeredValue(V1), myOfferValue(V2), C = V2 - V1.
+totalCost(1) :- noAccept.
+:~ totalCost(C), C > 1. [C @ 1]
+:~ totalCost(C), C <= 0. [0 @ 1]
+
+% 2 Ricevere l'ultima di un gruppo
+% 2.1 Gruppi formati da due proprietà
+% se aumento qua, rende l'offerta più difficile da accettare
+:~ accept, group(0, X), group(0, Y), offerProperty(1, X, V), property(0, Y), X != Y, W = V * 10 / 100. [W @ 1, X]
+:~ noAccept, group(0, X), group(0, Y), offerProperty(1, X, V), property(0, Y), X != Y, W = V * 10 / 100. [V - W @ 1, X]
+:~ accept, group(7, X), group(7, Y), offerProperty(1, X, V), property(0, Y), X != Y, W = V * 10 / 100. [W @ 1, X]
+:~ noAccept, group(7, X), group(7, Y), offerProperty(1, X, V), property(0, Y), X != Y, W = V * 10 / 100. [V - W @ 1, X]
+
+% 2.2 Gruppi formati da tre proprietà
+:~ accept, group(G, X), group(G, Y), group(G, Z), offerProperty(1, X, V), property(0, Y), property(0, Z), X != Y, X != Z, Y != Z, G != 0, G != 7, G != 8, W = V * 10 / 100. [W @ 1, X]
+:~ noAccept, group(G, X), group(G, Y), group(G, Z), offerProperty(1, X, V), property(0, Y), property(0, Z), X != Y, X != Z, Y != Z, G != 0, G != 7, G != 8, W = V * 10 / 100. [V - W @ 1, X]
+
+% 2.3 Gruppi formati da quattro proprietà
+:~ accept, group(8, X), group(8, Y), group(8, Z), group(8, T), offerProperty(1, X, V), property(0, Y), property(0, Z), property(0, T), X != Y, X != Z, X != T, Y != Z, Y != T, Z != T, W = V * 10 / 100. [W @ 1, X]
+:~ noAccept, group(8, X), group(8, Y), group(8, Z), group(8, T), offerProperty(1, X, V), property(0, Y), property(0, Z), property(0, T), X != Y, X != Z, X != T, Y != Z, Y != T, Z != T, W = V * 10 / 100. [V - W @ 1, X]
+
+% 3 Dare via l'ultima di un gruppo
+% 2.1 Gruppi formati da due proprietà
+% se aumento rendo più facile che accetta
+:~ accept, group(0, X), group(0, Y), offerProperty(0, X, V), property(1, Y), X != Y, W = V * 10 / 100, totalCost(C), V - W + C >= 0. [V - W + C @ 1, X]
+:~ accept, group(0, X), group(0, Y), offerProperty(0, X, V), property(1, Y), X != Y, W = V * 10 / 100, totalCost(C), V - W + C < 0. [0 @ 1, X]
+:~ noAccept, group(0, X), group(0, Y), offerProperty(0, X, V), property(1, Y), X != Y, W = V * 10 / 100. [W @ 1, X]
+:~ accept, group(7, X), group(7, Y), offerProperty(0, X, V), property(1, Y), X != Y, W = V * 10 / 100, totalCost(C), V - W + C >= 0. [V - W + C @ 1, X]
+:~ accept, group(7, X), group(7, Y), offerProperty(0, X, V), property(1, Y), X != Y, W = V * 10 / 100, totalCost(C), V - W + C < 0. [0 @ 1, X]
+:~ noAccept, group(7, X), group(7, Y), offerProperty(0, X, V), property(1, Y), X != Y, W = V * 10 / 100. [W @ 1, X]
+
+% 2.2 Gruppi formati da tre proprietà
+:~ accept, group(G, X), group(G, Y), group(G, Z), offerProperty(0, X, V), property(1, Y), property(1, Z), X != Y, X != Z, Y != Z, G != 0, G != 7, G != 8, W = V * 10 / 100, totalCost(C), V - W + C >= 0. [V - W + C @ 1, X]
+:~ accept, group(G, X), group(G, Y), group(G, Z), offerProperty(0, X, V), property(1, Y), property(1, Z), X != Y, X != Z, Y != Z, G != 0, G != 7, G != 8, W = V * 10 / 100, totalCost(C), V - W + C < 0. [0 @ 1, X]
+:~ noAccept, group(G, X), group(G, Y), group(G, Z), offerProperty(0, X, V), property(1, Y), property(1, Z), X != Y, X != Z, Y != Z, G != 0, G != 7, G != 8, W = V * 10 / 100. [W @ 1, X]
+
+% 2.3 Gruppi formati da quattro proprietà
+:~ accept, group(8, X), group(8, Y), group(8, Z), group(8, T), offerProperty(0, X, V), property(1, Y), property(1, Z), property(1, T), X != Y, X != Z, X != T, Y != Z, Y != T, Z != T, W = V * 10 / 100, totalCost(C), V - W + C >= 0. [V - W + C @ 1, X]
+:~ accept, group(8, X), group(8, Y), group(8, Z), group(8, T), offerProperty(0, X, V), property(1, Y), property(1, Z), property(1, T), X != Y, X != Z, X != T, Y != Z, Y != T, Z != T, W = V * 10 / 100, totalCost(C), V - W + C < 0. [0 @ 1, X]
+:~ noAccept, group(8, X), group(8, Y), group(8, Z), group(8, T), offerProperty(0, X, V), property(1, Y), property(1, Z), property(1, T), X != Y, X != Z, X != T, Y != Z, Y != T, Z != T, W = V * 10 / 100. [W @ 1, X]
+
+offeredValue(V) :- X = #sum{C, P : offerProperty(1, P, C)}, money(1, M), V = X + M.
+myOfferValue(V) :- X = #sum{C, P : offerProperty(0, P, C)}, money(0, M), V = X + M.
+
+% Il player 0 è quello che riceve l'offerta e la deve valutare
+player(0).
+player(1).
+
+% le informazioni relative al tabellone: se il primo attributo Ã¨ 5 allora la proprietÃ  Ã¨ senza proprietario
+property(1, 6).
+property(1, 8).
+property(1, 11).
+property(1, 13).
+property(1, 16).
+property(1, 18).
+property(0, 5).
+property(0, 15).
+property(0, 25).
+property(0, 3).
+
+% Fatti da input.
+offerProperty(0, 9, 120).
+offerProperty(0, 14, 160).
+offerProperty(0, 9, 200).
+offerProperty(1, 167, 60).
+offerProperty(1, 366, 200).
+money(0, 0).
+money(1, 350).
+
+% Gruppi di proprietÃ , sempre questi.
+group(0, 1).
+group(0, 3).
+group(1, 6).
+group(1, 8).
+group(1, 9).
+group(2, 11).
+group(2, 13).
+group(2, 14).
+group(3, 16).
+group(3, 18).
+group(3, 19).
+group(4, 21).
+group(4, 22).
+group(4, 24).
+group(5, 26).
+group(5, 27).
+group(5, 29).
+group(6, 31).
+group(6, 32).
+group(6, 34).
+group(7, 37).
+group(7, 39).
+group(8, 5).
+group(8, 15).
+group(8, 25).
+group(8, 35).

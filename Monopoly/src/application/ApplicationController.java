@@ -669,6 +669,7 @@ public class ApplicationController {
 					error.setHeaderText(null);
 					error.setContentText("Errore, non puoi offrire più soldi di quanti ne hai");
 					error.showAndWait();
+					return;
 				}
 				Alert otherAlert = new Alert(AlertType.CONFIRMATION);
 				otherAlert.setTitle("L'OFFERTA DI " + result.get());
@@ -702,13 +703,14 @@ public class ApplicationController {
 						error.setContentText("Errore, inserisci numeri");
 						error.showAndWait();
 						return;
-					} else if (Integer.parseInt(cash.getText()) > board.getCurrentPlayer().getCash()) {
+					} else if (Integer.parseInt(otherCash.getText()) > otherPlayer.getCash()) {
 						Alert error = new Alert(AlertType.ERROR);
 						error.setTitle("ERRORE");
 						error.setHeaderText(null);
 						error.setContentText(
 								"Errore, " + otherPlayer.getName() + " non può offrire più soldi di quanti ne ha");
 						error.showAndWait();
+						return;
 					}
 					int myCashOffer = Integer.parseInt(cash.getText());
 					int hisCashOffer = Integer.parseInt(otherCash.getText());

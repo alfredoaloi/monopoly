@@ -1,0 +1,28 @@
+buyHouse(X, C) | noBuyHouse(X) :- property(X, C).
+unmortage(X, C) | noUnmortage(X) :- mortaged(X, C).
+
+% MASSIMIZZO AL LIVELLO DUE IL GUADAGNO COMPLESSIVO DATO DALLE CASE CHE COMPRO E MINIMIZZO AL LIVELLO 1 IL NUMERO DI CASE COMPRATE
+:~ buyHouse(X, C). [C @ 1, X]
+:~ unmortage(X, C). [C @ 1, X]
+
+% per massimizzare il nuovo affitto delle case che dovrei comprare, minimizzo quello delle case che non compro
+:~ #sum{A, X : noBuyHouse(X), newRent(X, A)} = T1, #sum{A, X : noUnmortage(X), newRent(X, A)} = T2. [T1 + T2 @ 2]
+
+% rende il programma incoerente se non sono state comprate case
+boughtHouses :- buyHouse(_, _).
+unmortagedProperties :- unmortage(_, _).
+:- not boughtHouses, not unmortage.
+
+% non posso comprare case se supero la metà del budget
+:- moneyBound(M), C1 = #sum{V, X : buyHouse(X, V)}, C2 = #sum{V, X : unmortage(X, V)}, C1 + C2 > M.
+
+% soldi a disposizione. Alla prima iterazione vale Money / 2, alle iterazioni succesive vale quanto prima meno quello che ho speso.
+moneyBound(100).
+
+% il secondo attributo è il costo della costruzione della casa
+property(1, 50).
+newRent(1, 100).
+property(2, 250).
+newRent(2, 200).
+mortaged(3, 100).
+newRent(3, 10).

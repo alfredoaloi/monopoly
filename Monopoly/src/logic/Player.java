@@ -1,16 +1,32 @@
 package logic;
 
+import java.io.File;
 import java.util.ArrayList;
 
 import application.ApplicationController;
+import atoms.buyProperty.Buy;
+import atoms.buyProperty.CurrentPlayer;
+import atoms.buyProperty.CurrentPlayerMoney;
+import atoms.buyProperty.NoBuy;
+import atoms.buyProperty.PropertyToBuy;
 import boxes.Airport;
 import boxes.AirportState;
 import boxes.Box;
 import boxes.Property;
 import boxes.PropertyState;
+import it.unical.mat.embasp.base.Handler;
+import it.unical.mat.embasp.base.InputProgram;
+import it.unical.mat.embasp.base.Output;
+import it.unical.mat.embasp.languages.asp.ASPInputProgram;
+import it.unical.mat.embasp.languages.asp.ASPMapper;
+import it.unical.mat.embasp.languages.asp.AnswerSet;
+import it.unical.mat.embasp.languages.asp.AnswerSets;
+import it.unical.mat.embasp.platforms.desktop.DesktopHandler;
+import it.unical.mat.embasp.specializations.dlv2.desktop.DLV2DesktopService;
 
 public class Player {
 
+	private int id;
 	private String name;
 	private int cash;
 	private int position;
@@ -18,14 +34,23 @@ public class Player {
 	private boolean human;
 	private int daysInPrison;
 
-	public Player(String name, int cash, boolean human) {
+	public Player(int id, String name, int cash, boolean human) {
 		super();
+		this.id = id;
 		this.name = name;
 		this.cash = cash;
 		this.human = human;
 		position = 0;
 		properties = 0;
 		daysInPrison = 0;
+	}
+
+	public int getId() {
+		return id;
+	}
+
+	public void setId(int id) {
+		this.id = id;
 	}
 
 	public String getName() {
@@ -192,6 +217,122 @@ public class Player {
 			builder.append("Il giocatore " + this.name + " non ce la fa a racimolare altri soldi!\n");
 			ApplicationController.lastEventString = builder.toString();
 		}
+	}
+
+	public boolean aiBuyProperty(Property property, Board board) {
+		String encodingResource = "encodings" + File.separator + "buyProperty.dlv";
+		Handler handler = new DesktopHandler(new DLV2DesktopService("C:\\Users\\laolr\\Desktop\\dlv2"));
+		InputProgram facts = new ASPInputProgram();
+		try {
+			facts.addObjectInput(new CurrentPlayer(this.id));
+			facts.addObjectInput(new CurrentPlayerMoney(this.cash));
+			facts.addObjectInput(new PropertyToBuy(property.getId(), property.getValue()));
+			for (Box box : board.getBoxes()) {
+				if (box instanceof Property) {
+					Property temp = (Property) box;
+					if (temp.getOwner() == null) {
+						facts.addObjectInput(new atoms.buyProperty.Property(5, temp.getId()));
+					} else {
+						facts.addObjectInput(new atoms.buyProperty.Property(temp.getOwner().getId(), temp.getId()));
+					}
+				} else if (box instanceof Airport) {
+					Airport temp = (Airport) box;
+					if (temp.getOwner() == null) {
+						facts.addObjectInput(new atoms.buyProperty.Property(5, temp.getId()));
+					} else {
+						facts.addObjectInput(new atoms.buyProperty.Property(temp.getOwner().getId(), temp.getId()));
+					}
+				}
+				ASPMapper.getInstance().registerClass(Buy.class);
+				ASPMapper.getInstance().registerClass(NoBuy.class);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		handler.addProgram(facts);
+		InputProgram encoding = new ASPInputProgram();
+		encoding.addFilesPath(encodingResource);
+		handler.addProgram(encoding);
+
+		Output o = handler.startSync();
+
+		AnswerSets answers = (AnswerSets) o;
+		System.out.println(answers.getAnswersets().size());
+		if (answers.getAnswersets().size() > 1) {
+			return false;
+		}
+		for (AnswerSet a : answers.getAnswersets()) {
+			System.out.println(a.toString());
+			try {
+				for (Object obj : a.getAtoms()) {
+					if (obj instanceof Buy) {
+						return true;
+					}
+				}
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+
+		}
+		return false;
+	}
+
+	public boolean aiBuyAirport(Airport airport, Board board) {
+		String encodingResource = "encodings" + File.separator + "buyProperty.dlv";
+		Handler handler = new DesktopHandler(new DLV2DesktopService("C:\\Users\\laolr\\Desktop\\dlv2"));
+		InputProgram facts = new ASPInputProgram();
+		try {
+			facts.addObjectInput(new CurrentPlayer(this.id));
+			facts.addObjectInput(new CurrentPlayerMoney(this.cash));
+			facts.addObjectInput(new PropertyToBuy(airport.getId(), airport.getValue()));
+			for (Box box : board.getBoxes()) {
+				if (box instanceof Property) {
+					Property temp = (Property) box;
+					if (temp.getOwner() == null) {
+						facts.addObjectInput(new atoms.buyProperty.Property(5, temp.getId()));
+					} else {
+						facts.addObjectInput(new atoms.buyProperty.Property(temp.getOwner().getId(), temp.getId()));
+					}
+				} else if (box instanceof Airport) {
+					Airport temp = (Airport) box;
+					if (temp.getOwner() == null) {
+						facts.addObjectInput(new atoms.buyProperty.Property(5, temp.getId()));
+					} else {
+						facts.addObjectInput(new atoms.buyProperty.Property(temp.getOwner().getId(), temp.getId()));
+					}
+				}
+				ASPMapper.getInstance().registerClass(Buy.class);
+				ASPMapper.getInstance().registerClass(NoBuy.class);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		handler.addProgram(facts);
+		InputProgram encoding = new ASPInputProgram();
+		encoding.addFilesPath(encodingResource);
+		handler.addProgram(encoding);
+
+		Output o = handler.startSync();
+
+		AnswerSets answers = (AnswerSets) o;
+		System.out.println(answers.getAnswersets().size());
+		if (answers.getAnswersets().size() > 1) {
+			return false;
+		}
+		for (AnswerSet a : answers.getAnswersets()) {
+			System.out.println(a.toString());
+			try {
+				for (Object obj : a.getAtoms()) {
+					if (obj instanceof Buy) {
+						return true;
+					}
+				}
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+
+		}
+		return false;
 	}
 
 }

@@ -156,10 +156,10 @@ public class ApplicationController {
 
 		board = new Board();
 		board.createBoard();
-		Player player1 = new Player(player1Name, 112345, true);
-		Player player2 = new Player(player2Name, 1, false);
-		Player player3 = new Player(player3Name, 1, false);
-		Player player4 = new Player(player4Name, 1, false);
+		Player player1 = new Player(0, player1Name, 1500, true);
+		Player player2 = new Player(1, player2Name, 1500, false);
+		Player player3 = new Player(2, player3Name, 1500, false);
+		Player player4 = new Player(3, player4Name, 1500, false);
 		board.getPlayers().add(player1);
 		board.getPlayers().add(player2);
 		board.getPlayers().add(player3);

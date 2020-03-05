@@ -1,0 +1,35 @@
+sellHouse(X) | noSellHouse(X) :- property(X, _, V), V > 0.
+mortage(X) | noMortage(X) :- property(X, _, 0).
+
+% Guadagno dalla vendita di cose
+cashEarned(C) :- C1 = #sum{V, X : sellHouse(X), sellHouseRevenue(X, V)}, C2 = #sum{V, X : mortage(X), mortageRevenue(X, V)}, C = C1 + C2.
+
+% minimizziamo lo scarto tra i soldi che ho guadagnato e quelli che devo guadagnare
+:~ cashEarned(C), moneyLeft(M), C < M, X = M - C. [X @ 2]
+:~ cashEarned(C), moneyLeft(M), C >= M, X = C - M. [X @ 2]
+
+% Perdita dell'affitto
+lossRent(C) :- C1 = #sum{V, X : sellHouse(X), property(X, V1, V2), V = V1 - V2}, C2 = #sum{V, X : mortage(X), property(X, V1, V2), V = V1 - V2}, C = C1 + C2.
+
+% Minimizziamo l'affitto perso
+:~ lossRent(C). [C @ 1]
+
+
+% Devo almeno fare qualcosa
+:- cashEarned(C), C = 0.
+
+% Quanto devo guadagnare
+moneyLeft(100).
+
+% numero proprietà, valore dell'affitto attuale, valore dell'affitto in caso di vendita casa (>0)/ipoteca (=0)
+property(1, 100, 0).
+sellHouseRevenue(1, 25).
+mortageRevenue(1, 90).
+
+property(2, 150, 0).
+sellHouseRevenue(2, 50).
+mortageRevenue(2, 150).
+
+property(3, 200, 0).
+sellHouseRevenue(3, 100).
+mortageRevenue(3, 200).

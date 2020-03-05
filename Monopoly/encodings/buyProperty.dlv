@@ -1,0 +1,158 @@
+% GUESS
+buy(X) | noBuy(X) :- propertyToBuy(X, _).
+
+% STRONG CONSTRAINTS
+% Se possiedo TUTTE le altre proprietà del gruppo allora devo comprarla necessariamente.
+% 1. Per i gruppi composti da 2 proprietà. P _
+:- noBuy(X), ownedProperty(Y), group(0, X), group(0, Y), X != Y.
+:- noBuy(X), ownedProperty(Y), group(7, X), group(7, Y), X != Y.
+
+% 2. per i gruppi composti da 3 proprietà. P P _
+:- noBuy(X), ownedProperty(Y), ownedProperty(Z), group(G, X), group(G, Y), group(G, Z), X != Y, X != Z, Y != Z, G != 0, G != 7, G != 8.
+
+% 3. per gli aereoporti. P P P _
+:- noBuy(X), ownedProperty(Y), ownedProperty(Z), ownedProperty(W), group(8, X), group(8, Y), group(8, Z), group(8, W), X != Y, X != Z, X != W, Y != Z, Y != W, Z != W.
+
+% WEAK CONSTRAINTS.
+% 1. Gruppo 0 e 7, 2 sole proprietà.
+% 1.1 Nessuna delle due è posseduta da qualcuno. _ _
+:~ buy(X), currentPlayerMoney(M), propertyToBuy(X, C), group(0, X), group(0, Y), X != Y. [C @ 1]
+:~ noBuy(X), currentPlayerMoney(M), propertyToBuy(X, C), group(0, X), group(0, Y), X != Y. [M - C @ 1]
+:~ buy(X), currentPlayerMoney(M), propertyToBuy(X, C), group(7, X), group(7, Y), X != Y. [C @ 1]
+:~ noBuy(X), currentPlayerMoney(M), propertyToBuy(X, C), group(7, X), group(7, Y), X != Y. [M - C @ 1]
+
+% 1.2 L'altra proprietà è posseduta da qualcuno. A _
+:~ buy(X), currentPlayerMoney(M), propertyToBuy(X, C), group(0, X), group(0, Y), property(P, Y), player(P), P != 5, X != Y, W = C / 100 * 20. [C - W @ 2]
+:~ noBuy(X), currentPlayerMoney(M), propertyToBuy(X, C), group(0, X), group(0, Y), property(P, Y), player(P), P != 5, X != Y, W = C / 100 * 20. [M - C + W @ 2]
+:~ buy(X), currentPlayerMoney(M), propertyToBuy(X, C), group(7, X), group(7, Y), property(P, Y), player(P), P != 5, X != Y, W = C / 100 * 20. [C - W @ 2]
+:~ noBuy(X), currentPlayerMoney(M), propertyToBuy(X, C), group(7, X), group(7, Y), property(P, Y), player(P), P != 5, X != Y, W = C / 100 * 20. [M - C + W @ 2]
+
+% 2. Gruppi composti da 3 proprietà.
+% 2.1 Nessuna delle tre è posseduta da qualcuno. _ _ _
+:~ buy(X), currentPlayerMoney(M), propertyToBuy(X, C), group(G, X), group(G, Y), group(G, Z), X != Y, X != Z, Y != Z, G != 0, G != 7, G != 8. [C @ 1]
+:~ noBuy(X), currentPlayerMoney(M), propertyToBuy(X, C), group(G, X), group(G, Y), group(G, Z), X != Y, X != Z, Y != Z, G != 0, G != 7, G != 8. [M - C @ 1]
+:~ buy(X), currentPlayerMoney(M), propertyToBuy(X, C), group(G, X), group(G, Y), group(G, Z), property(5, Y), property(5, Z), X != Y, X != Z, Y != Z, G != 0, G != 7, G != 8, W = C / 100 * 10. [C - W @ 2]
+:~ noBuy(X), currentPlayerMoney(M), propertyToBuy(X, C), group(G, X), group(G, Y), group(G, Z), property(5, Y), property(5, Z), X != Y, X != Z, Y != Z, G != 0, G != 7, G != 8, W = C / 100 * 10. [M - C + W @ 2]
+
+% 2.2 Solo una proprietà è posseduta da me. P _ _
+:~ buy(X), currentPlayerMoney(M), propertyToBuy(X, C), group(G, X), group(G, Y), group(G, Z), property(P, Y), property(5, Z), currentPlayer(P), X != Y, X != Z, Y != Z, G != 0, G != 7, G != 8, W = C / 100 * 20. [C - W @ 2]
+:~ noBuy(X), currentPlayerMoney(M), propertyToBuy(X, C), group(G, X), group(G, Y), group(G, Z), property(P, Y), property(5, Z), currentPlayer(P), X != Y, X != Z, Y != Z, G != 0, G != 7, G != 8, W = C / 100 * 20. [M - C + W @ 2]
+
+% 2.3 Solo una proprietà è posseduta da un altro giocatore. A _ _
+:~ buy(X), currentPlayerMoney(M), propertyToBuy(X, C), group(G, X), group(G, Y), group(G, Z), property(P, Y), property(5, Z), player(P), not currentPlayer(P), X != Y, X != Z, Y != Z, G != 0, G != 7, G != 8, W = C / 100 * 10. [C - W @ 2]
+:~ noBuy(X), currentPlayerMoney(M), propertyToBuy(X, C), group(G, X), group(G, Y), group(G, Z), property(P, Y), property(5, Z), player(P), not currentPlayer(P), X != Y, X != Z, Y != Z, G != 0, G != 7, G != 8, W = C / 100 * 10. [M - C + W @ 2]
+
+% 2.4 Una proprietà è posseduta da me, un'altra da un altro giocatore. P A _
+:~ buy(X), currentPlayerMoney(M), propertyToBuy(X, C), group(G, X), group(G, Y), group(G, Z), property(P1, Y), property(P2, Z), currentPlayer(P1), player(P2), P1 != P2, X != Y, X != Z, Y != Z, G != 0, G != 7, G != 8, W = C / 100 * 20. [C - W @ 2]
+:~ noBuy(X), currentPlayerMoney(M), propertyToBuy(X, C), group(G, X), group(G, Y), group(G, Z), property(P1, Y), property(P2, Z), currentPlayer(P1), player(P2), P1 != P2, X != Y, X != Z, Y != Z, G != 0, G != 7, G != 8, W = C / 100 * 20. [M - C + W @ 2]
+
+% 2.5 Due proprietà sono possedute da un altro singolo giocatore. A A _
+:~ buy(X), currentPlayerMoney(M), propertyToBuy(X, C), group(G, X), group(G, Y), group(G, Z), property(P, Y), property(P, Z), not currentPlayer(P), player(P), X != Y, X != Z, Y != Z, G != 0, G != 7, G != 8, W = C / 100 * 20. [C - W @ 2]
+:~ noBuy(X), currentPlayerMoney(M), propertyToBuy(X, C), group(G, X), group(G, Y), group(G, Z), property(P, Y), property(P, Z), not currentPlayer(P), player(P), X != Y, X != Z, Y != Z, G != 0, G != 7, G != 8, W = C / 100 * 20. [M - C + W @ 2]
+
+% 2.6 Due proprietà sono possedute da due giocatori differenti. A B _
+:~ buy(X), currentPlayerMoney(M), propertyToBuy(X, C), group(G, X), group(G, Y), group(G, Z), property(P1, Y), property(P2, Z), not currentPlayer(P1), not currentPlayer(P2), player(P1), player(P2), P1 != P2, X != Y, X != Z, Y != Z, G != 0, G != 7, G != 8, W = C / 100 * 10. [C - W @ 2]
+:~ noBuy(X), currentPlayerMoney(M), propertyToBuy(X, C), group(G, X), group(G, Y), group(G, Z), property(P1, Y), property(P2, Z), not currentPlayer(P1), not currentPlayer(P2), player(P1), player(P2), P1 != P2, X != Y, X != Z, Y != Z, G != 0, G != 7, G != 8, W = C / 100 * 10. [M - C + W @ 2]
+
+% 3. Aereoporti.
+% 3.1 Nessuno dei quattro è posseduto da qualcuno. _ _ _ _
+:~ buy(X), currentPlayerMoney(M), propertyToBuy(X, C), group(8, X), group(8, Y), group(8, Z), group(8, V), X != Y, X != Z, X != V, Y != Z, Y != V, Z != V. [C @ 1]
+:~ noBuy(X), currentPlayerMoney(M), propertyToBuy(X, C), group(8, X), group(8, Y), group(8, Z), group(8, V), X != Y, X != Z, X != V, Y != Z, Y != V, Z != V. [M - C @ 1]
+
+% 3.2 Il giocatore possiede un aereoporto. P _ _ _
+:~ buy(X), currentPlayerMoney(M), propertyToBuy(X, C), group(8, X), group(8, Y), group(8, Z), group(8, V), property(P, Y), property(5, Z), property(5, V), currentPlayer(P), X != Y, X != Z, X != V, Y != Z, Y != V, Z != V, W = C / 100 * 10. [C - W @ 2]
+:~ noBuy(X), currentPlayerMoney(M), propertyToBuy(X, C), group(8, X), group(8, Y), group(8, Z), group(8, V), property(P, Y), property(5, Z), property(5, V), currentPlayer(P), X != Y, X != Z, X != V, Y != Z, Y != V, Z != V, W = C / 100 * 10. [M - C + W @ 2]
+
+% 3.3 Un altro giocatore ne possiede uno. A _ _ _
+:~ buy(X), currentPlayerMoney(M), propertyToBuy(X, C), group(8, X), group(8, Y), group(8, Z), group(8, V), property(P, Y), property(5, Z), property(5, V), not currentPlayer(P), player(P), X != Y, X != Z, X != V, Y != Z, Y != V, Z != V, W = C / 100 * 10. [C @ 2]
+:~ noBuy(X), currentPlayerMoney(M), propertyToBuy(X, C), group(8, X), group(8, Y), group(8, Z), group(8, V), property(P, Y), property(5, Z), property(5, V), not currentPlayer(P), player(P), X != Y, X != Z, X != V, Y != Z, Y != V, Z != V, W = C / 100 * 10. [M - C @ 2]
+
+% 3.4 Il giocatore ne possiede due. P P _ _
+:~ buy(X), currentPlayerMoney(M), propertyToBuy(X, C), group(8, X), group(8, Y), group(8, Z), group(8, V), property(P, Y), property(P, Z), property(5, V), currentPlayer(P), X != Y, X != Z, X != V, Y != Z, Y != V, Z != V, W = C / 100 * 20. [C - W @ 2]
+:~ noBuy(X), currentPlayerMoney(M), propertyToBuy(X, C), group(8, X), group(8, Y), group(8, Z), group(8, V), property(P, Y), property(P, Z), property(5, V), currentPlayer(P), X != Y, X != Z, X != V, Y != Z, Y != V, Z != V, W = C / 100 * 20. [M - C + W @ 2]
+
+% 3.5 Il giocatore ne possiede uno, un altro ne possiede un altro. P A _ _
+:~ buy(X), currentPlayerMoney(M), propertyToBuy(X, C), group(8, X), group(8, Y), group(8, Z), group(8, V), property(P1, Y), property(P2, Z), property(5, V), currentPlayer(P1), player(P2), P1 != P2, X != Y, X != Z, X != V, Y != Z, Y != V, Z != V, W = C / 100 * 20. [C - W @ 2]
+:~ noBuy(X), currentPlayerMoney(M), propertyToBuy(X, C), group(8, X), group(8, Y), group(8, Z), group(8, V), property(P1, Y), property(P2, Z), property(5, V), currentPlayer(P1), player(P2), P1 != P2, X != Y, X != Z, X != V, Y != Z, Y != V, Z != V, W = C / 100 * 20. [M - C + W @ 2]
+
+% 3.6 Un giocatore ne possiede due. A A _ _
+:~ buy(X), currentPlayerMoney(M), propertyToBuy(X, C), group(8, X), group(8, Y), group(8, Z), group(8, V), property(P, Y), property(P, Z), property(5, V), not currentPlayer(P), player(P), X != Y, X != Z, X != V, Y != Z, Y != V, Z != V, W = C / 100 * 10. [C - W @ 2]
+:~ noBuy(X), currentPlayerMoney(M), propertyToBuy(X, C), group(8, X), group(8, Y), group(8, Z), group(8, V), property(P, Y), property(P, Z), property(5, V), not currentPlayer(P), player(P), X != Y, X != Z, X != V, Y != Z, Y != V, Z != V, W = C / 100 * 10. [M - C + W @ 2]
+
+% 3.7 Un giocatore ne possiede uno, un altro ne possiede un altro. A B _ _
+:~ buy(X), currentPlayerMoney(M), propertyToBuy(X, C), group(8, X), group(8, Y), group(8, Z), group(8, V), property(P1, Y), property(P2, Z), property(5, V), not currentPlayer(P1), not currentPlayer(P2), player(P1), player(P2), P1 != P2, X != Y, X != Z, X != V, Y != Z, Y != V, Z != V, W = C / 100 * 10. [C @ 2]
+:~ noBuy(X), currentPlayerMoney(M), propertyToBuy(X, C), group(8, X), group(8, Y), group(8, Z), group(8, V), property(P1, Y), property(P2, Z), property(5, V), not currentPlayer(P1), not currentPlayer(P2), player(P1), player(P2), P1 != P2, X != Y, X != Z, X != V, Y != Z, Y != V, Z != V, W = C / 100 * 10. [M - C @ 2]
+
+% 3.8 Il giocatore ne possiede due, un altro ne possiede uno. P P A _
+:~ buy(X), currentPlayerMoney(M), propertyToBuy(X, C), group(8, X), group(8, Y), group(8, Z), group(8, V), property(P1, Y), property(P1, Z), property(P2, V), currentPlayer(P1), player(P2), P1 != P2, X != Y, X != Z, X != V, Y != Z, Y != V, Z != V, W = C / 100 * 30. [C - W @ 2]
+:~ noBuy(X), currentPlayerMoney(M), propertyToBuy(X, C), group(8, X), group(8, Y), group(8, Z), group(8, V), property(P1, Y), property(P1, Z), property(P2, V), currentPlayer(P1), player(P2), P1 != P2, X != Y, X != Z, X != V, Y != Z, Y != V, Z != V, W = C / 100 * 30. [M - C + W @ 2]
+
+% 3.9 Il giocatore ne possiede uno, un altro ne possiede due. P A A _
+:~ buy(X), currentPlayerMoney(M), propertyToBuy(X, C), group(8, X), group(8, Y), group(8, Z), group(8, V), property(P1, Y), property(P2, Z), property(P2, V), currentPlayer(P1), player(P2), P1 != P2, X != Y, X != Z, X != V, Y != Z, Y != V, Z != V, W = C / 100 * 20. [C - W @ 2]
+:~ noBuy(X), currentPlayerMoney(M), propertyToBuy(X, C), group(8, X), group(8, Y), group(8, Z), group(8, V), property(P1, Y), property(P2, Z), property(P2, V), currentPlayer(P1), player(P2), P1 != P2, X != Y, X != Z, X != V, Y != Z, Y != V, Z != V, W = C / 100 * 20. [M - C + W @ 2]
+
+% 3.10 Il giocatore ne possiede uno, gli altri due sono posseduti da due giocatori differenti. P A B _
+:~ buy(X), currentPlayerMoney(M), propertyToBuy(X, C), group(8, X), group(8, Y), group(8, Z), group(8, V), property(P1, Y), property(P2, Z), property(P3, V), currentPlayer(P1), player(P2), player(P3), P1 != P2, P1 != P3, P2 != P3, X != Y, X != Z, X != V, Y != Z, Y != V, Z != V, W = C / 100 * 20. [C - W @ 2]
+:~ noBuy(X), currentPlayerMoney(M), propertyToBuy(X, C), group(8, X), group(8, Y), group(8, Z), group(8, V), property(P1, Y), property(P2, Z), property(P3, V), currentPlayer(P1), player(P2), player(P3), P1 != P2, P1 != P3, P2 != P3, X != Y, X != Z, X != V, Y != Z, Y != V, Z != V, W = C / 100 * 20. [M - C + W @ 2]
+
+% 3.11 Un giocatore ne possiede due, un altro uno. A A B _
+:~ buy(X), currentPlayerMoney(M), propertyToBuy(X, C), group(8, X), group(8, Y), group(8, Z), group(8, V), property(P1, Y), property(P2, Z), property(P2, V), not currentPlayer(P1), not currentPlayer(P2), player(P1), player(P2), P1 != P2, X != Y, X != Z, X != V, Y != Z, Y != V, Z != V, W = C / 100 * 10. [C @ 2]
+:~ noBuy(X), currentPlayerMoney(M), propertyToBuy(X, C), group(8, X), group(8, Y), group(8, Z), group(8, V), property(P1, Y), property(P2, Z), property(P2, V), not currentPlayer(P1), not currentPlayer(P2), player(P1), player(P2), P1 != P2, X != Y, X != Z, X != V, Y != Z, Y != V, Z != V, W = C / 100 * 10. [M - C @ 2]
+
+% 3.12 Un altro giocatore ne possiede tre. A A A _
+:~ buy(X), currentPlayerMoney(M), propertyToBuy(X, C), group(8, X), group(8, Y), group(8, Z), group(8, V), property(P, Y), property(P, Z), property(P, V), not currentPlayer(P), player(P), X != Y, X != Z, X != V, Y != Z, Y != V, Z != V, W = C / 100 * 20. [C - W @ 2]
+:~ noBuy(X), currentPlayerMoney(M), propertyToBuy(X, C), group(8, X), group(8, Y), group(8, Z), group(8, V), property(P, Y), property(P, Z), property(P, V), not currentPlayer(P), player(P), X != Y, X != Z, X != V, Y != Z, Y != V, Z != V, W = C / 100 * 20. [M - C + W @ 2]
+
+% 3.13 I tre aereoporti sono posseduti da tre giocatori diversi. A B C _
+:~ buy(X), currentPlayerMoney(M), propertyToBuy(X, C), group(8, X), group(8, Y), group(8, Z), group(8, V), property(P1, Y), property(P2, Z), property(P3, V), player(P1), player(P2), player(P3), not currentPlayer(P1), not currentPlayer(P2), not currentPlayer(P3), P1 != P2, P1 != P3, P2 != P3, X != Y, X != Z, X != V, Y != Z, Y != V, Z != V, W = C / 100 * 20. [C @ 2]
+:~ noBuy(X), currentPlayerMoney(M), propertyToBuy(X, C), group(8, X), group(8, Y), group(8, Z), group(8, V), property(P1, Y), property(P2, Z), property(P3, V), player(P1), player(P2), player(P3), not currentPlayer(P1), not currentPlayer(P2), not currentPlayer(P3), P1 != P2, P1 != P3, P2 != P3, X != Y, X != Z, X != V, Y != Z, Y != V, Z != V, W = C / 100 * 20. [M - C @ 2]
+
+% FATTI.
+% identifica quale proprietà comprare, DA INPUT.
+% propertyToBuy(1, 110).
+
+% il player che sta giocando DA INPUT
+% currentPlayer(0).
+% currentPlayerMoney(200).
+
+% le informazioni relative al tabellone: se il primo attributo è 5 allora la proprietà è senza proprietario, DA INPUT
+% property(5, 1).
+% property(1, 2).
+% property(2, 3).
+% property(3, 4).
+
+% proprietà possedute, fornite da input.
+ownedProperty(X) :- property(P, X), currentPlayer(P).
+
+% Gruppi di proprietà, sempre questi.
+group(0, 1).
+group(0, 3).
+group(1, 6).
+group(1, 8).
+group(1, 9).
+group(2, 11).
+group(2, 13).
+group(2, 14).
+group(3, 16).
+group(3, 18).
+group(3, 19).
+group(4, 21).
+group(4, 22).
+group(4, 24).
+group(5, 26).
+group(5, 27).
+group(5, 29).
+group(6, 31).
+group(6, 32).
+group(6, 34).
+group(7, 37).
+group(7, 39).
+group(8, 5).
+group(8, 15).
+group(8, 25).
+group(8, 35).
+
+player(0).
+player(1).
+player(2).
+player(3).

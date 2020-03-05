@@ -12,6 +12,7 @@ import logic.Player;
 
 public class Airport extends Box {
 
+	private int id;
 	private int value;
 	private AirportState state;
 	private HashMap<AirportState, Integer> rentPrice;
@@ -19,9 +20,10 @@ public class Airport extends Box {
 	private int[] sameGroupPositions;
 	private Board board;
 
-	public Airport(String name, int value, AirportState airportState, int oneAirportRent, int twoAirportRent,
+	public Airport(int id, String name, int value, AirportState airportState, int oneAirportRent, int twoAirportRent,
 			int threeAirportRent, int fourAirportRent, Player owner, int[] sameGroupPositions, Board board) {
 		super(name);
+		this.id = id;
 		this.value = value;
 		this.state = airportState;
 		rentPrice = new HashMap<>();
@@ -29,6 +31,14 @@ public class Airport extends Box {
 		this.owner = owner;
 		this.sameGroupPositions = sameGroupPositions;
 		this.board = board;
+	}
+
+	public int getId() {
+		return id;
+	}
+
+	public void setId(int id) {
+		this.id = id;
 	}
 
 	public void setRentPrice(int oneAirportRent, int twoAirportRent, int threeAirportRent, int fourAirportRent) {
@@ -116,13 +126,18 @@ public class Airport extends Box {
 						System.out.println("In teoria va all'asta");
 					}
 				} else {
-					// Il giocatore se la compra PER IL MOMENTO
-					ApplicationController.lastEventString = this.getName() + " comprato dal giocatore "
-							+ player.getName();
-					player.payToBank(this.value);
-					this.owner = player;
-					this.state = AirportState.ONE_AIRPORT;
-					player.setProperties(player.getProperties() + 1);
+					if (player.aiBuyAirport(this, board)) {
+						// Il giocatore se la compra PER IL MOMENTO
+						ApplicationController.lastEventString = "Aereoporto " + this.getName()
+								+ " comprato dal giocatore " + player.getName();
+						player.payToBank(this.value);
+						this.owner = player;
+						this.state = AirportState.ONE_AIRPORT;
+						player.setProperties(player.getProperties() + 1);
+					} else {
+						ApplicationController.lastEventString = "Il giocatore " + player.getName()
+								+ " ha deciso di non acquistare l'aereoporto!";
+					}
 				}
 				checkAllGroup();
 			}

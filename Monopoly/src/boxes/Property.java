@@ -12,6 +12,7 @@ import logic.Player;
 
 public class Property extends Box {
 
+	private int id;
 	private int value;
 	private PropertyState state;
 	private HashMap<PropertyState, Integer> rentPrice;
@@ -20,10 +21,11 @@ public class Property extends Box {
 	private Board board;
 	private int houseCost;
 
-	public Property(String name, int value, int houseCost, PropertyState state, int[] sameGroupPositions,
+	public Property(int id, String name, int value, int houseCost, PropertyState state, int[] sameGroupPositions,
 			int noHousesRent, int allGroupRent, int oneHouseRent, int twoHouseRent, int threeHouseRent,
 			int fourHouseRent, int oneHotelRent, Board board) {
 		super(name);
+		this.id = id;
 		this.value = value;
 		this.state = state;
 		this.sameGroupPositions = sameGroupPositions;
@@ -32,6 +34,14 @@ public class Property extends Box {
 		setRentPrice(noHousesRent, allGroupRent, oneHouseRent, twoHouseRent, threeHouseRent, fourHouseRent,
 				oneHotelRent);
 		this.houseCost = houseCost;
+	}
+
+	public int getId() {
+		return id;
+	}
+
+	public void setId(int id) {
+		this.id = id;
 	}
 
 	public int getValue() {
@@ -123,13 +133,18 @@ public class Property extends Box {
 						System.out.println("In teoria va all'asta");
 					}
 				} else {
-					// Il giocatore se la compra PER IL MOMENTO
-					ApplicationController.lastEventString = "Proprietà " + this.getName() + " comprata dal giocatore "
-							+ player.getName();
-					player.payToBank(this.value);
-					this.owner = player;
-					this.state = PropertyState.NO_HOUSES;
-					player.setProperties(player.getProperties() + 1);
+					if (player.aiBuyProperty(this, board)) {
+						// Il giocatore se la compra PER IL MOMENTO
+						ApplicationController.lastEventString = "Proprietà " + this.getName()
+								+ " comprata dal giocatore " + player.getName();
+						player.payToBank(this.value);
+						this.owner = player;
+						this.state = PropertyState.NO_HOUSES;
+						player.setProperties(player.getProperties() + 1);
+					} else {
+						ApplicationController.lastEventString = "Il giocatore " + player.getName()
+								+ " ha deciso di non acquistare la proprietà!";
+					}
 				}
 				checkAllGroup();
 			}

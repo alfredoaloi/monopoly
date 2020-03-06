@@ -14,15 +14,16 @@ unmortagedProperties :- unmortage(_, _).
 :- not boughtHouses, not unmortage.
 
 % non posso comprare case se supero la metà del budget
-:- moneyBound(M), C1 = #sum{V, X : buyHouse(X, V)}, C2 = #sum{V, X : unmortage(X, V)}, C1 + C2 > M.
+moneySpent(M) :- C1 = #sum{V, X : buyHouse(X, V)}, C2 = #sum{V, X : unmortage(X, V)}, M = C1 + C2.
+:- moneyBound(M), moneySpent(C), C > M.
 
 % soldi a disposizione. Alla prima iterazione vale Money / 2, alle iterazioni succesive vale quanto prima meno quello che ho speso.
-moneyBound(100).
+% moneyBound(100).
 
 % il secondo attributo è il costo della costruzione della casa
-property(1, 50).
-newRent(1, 100).
-property(2, 250).
-newRent(2, 200).
-mortaged(3, 100).
-newRent(3, 10).
+% property(1, 50).
+% newRent(1, 100).
+% property(2, 250).
+% newRent(2, 200).
+% mortaged(3, 100).
+% newRent(3, 10).

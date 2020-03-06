@@ -3,7 +3,7 @@ accept | noAccept.
 % 1 Confronto valore offerto e valore di quello che devo dare
 totalCost(C) :- accept, offeredValue(V1), myOfferValue(V2), C = V2 - V1.
 totalCost(1) :- noAccept.
-:~ totalCost(C), C > 1. [C @ 1]
+:~ totalCost(C), C >= 1. [C @ 1]
 :~ totalCost(C), C <= 0. [0 @ 1]
 
 % 2 Ricevere l'ultima di un gruppo
@@ -49,26 +49,26 @@ myOfferValue(V) :- X = #sum{C, P : offerProperty(0, P, C)}, money(0, M), V = X +
 player(0).
 player(1).
 
-% le informazioni relative al tabellone: se il primo attributo Ã¨ 5 allora la proprietÃ  Ã¨ senza proprietario
-property(1, 6).
-property(1, 8).
-property(1, 11).
-property(1, 13).
-property(1, 16).
-property(1, 18).
-property(0, 5).
-property(0, 15).
-property(0, 25).
-property(0, 3).
+% le informazioni relative al tabellone: se il primo attributo Ã¨ 5 allora la proprietÃ  Ã¨ senza proprietario, DA INPUT
+% property(1, 6).
+% property(1, 8).
+% property(1, 11).
+% property(1, 13).
+% property(1, 16).
+% property(1, 18).
+% property(0, 5).
+% property(0, 15).
+% property(0, 25).
+% property(0, 3).
 
 % Fatti da input.
-offerProperty(0, 9, 120).
-offerProperty(0, 14, 160).
-offerProperty(0, 9, 200).
-offerProperty(1, 167, 60).
-offerProperty(1, 366, 200).
-money(0, 0).
-money(1, 350).
+% offerProperty(0, 9, 120).
+% offerProperty(0, 14, 160).
+% offerProperty(0, 9, 200).
+% offerProperty(1, 167, 60).
+% offerProperty(1, 366, 200).
+% money(0, 0).
+% money(1, 350).
 
 % Gruppi di proprietÃ , sempre questi.
 group(0, 1).

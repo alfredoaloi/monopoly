@@ -4,6 +4,17 @@ import java.io.File;
 import java.util.ArrayList;
 
 import application.ApplicationController;
+import atoms.acceptExchange.Accept;
+import atoms.acceptExchange.Money;
+import atoms.acceptExchange.NoAccept;
+import atoms.acceptExchange.OfferProperty;
+import atoms.buyHouse.BuyHouse;
+import atoms.buyHouse.MoneyBound;
+import atoms.buyHouse.MoneySpent;
+import atoms.buyHouse.Mortaged;
+import atoms.buyHouse.NoBuyHouse;
+import atoms.buyHouse.NoUnmortage;
+import atoms.buyHouse.Unmortage;
 import atoms.buyProperty.Buy;
 import atoms.buyProperty.CurrentPlayer;
 import atoms.buyProperty.CurrentPlayerMoney;
@@ -166,9 +177,38 @@ public class Player {
 		airport.checkAllGroup();
 	}
 
-	public boolean manageExchange(int myCashOffer, int hisCashOffer, ArrayList<Property> myProperties,
-			ArrayList<Airport> myAirports, ArrayList<Property> hisProperties, ArrayList<Airport> hisAirports) {
-		return true;
+	public boolean manageExchange(Player currentPlayer, int myCashOffer, int hisCashOffer,
+			ArrayList<Property> myProperties, ArrayList<Airport> myAirports, ArrayList<Property> hisProperties,
+			ArrayList<Airport> hisAirports, Board board) {
+		boolean accepted = aiAcceptExchange(currentPlayer, myCashOffer, hisCashOffer, myProperties, myAirports,
+				hisProperties, hisAirports, board);
+
+		if (accepted) {
+			currentPlayer.cash += hisCashOffer;
+			currentPlayer.cash -= myCashOffer;
+			this.cash += myCashOffer;
+			this.cash -= hisCashOffer;
+			for (Property property : myProperties) {
+				property.setOwner(this);
+				property.checkAllGroup();
+			}
+			for (Airport airport : myAirports) {
+				airport.setOwner(this);
+				airport.checkAllGroup();
+			}
+			for (Property property : hisProperties) {
+				property.setOwner(currentPlayer);
+				property.checkAllGroup();
+			}
+			for (Airport airport : hisAirports) {
+				airport.setOwner(this);
+				airport.checkAllGroup();
+			}
+			ApplicationController.lastEventString = "Scambio accettato da " + this.name;
+			return true;
+		} else {
+			return false;
+		}
 	}
 
 	public void tryToSaveYourself(Board board) {
@@ -333,6 +373,162 @@ public class Player {
 
 		}
 		return false;
+	}
+
+	public boolean aiAcceptExchange(Player currentPlayer, int myCashOffer, int hisCashOffer,
+			ArrayList<Property> myProperties, ArrayList<Airport> myAirports, ArrayList<Property> hisProperties,
+			ArrayList<Airport> hisAirports, Board board) {
+		String encodingResource = "encodings" + File.separator + "acceptExchange.dlv";
+		Handler handler = new DesktopHandler(new DLV2DesktopService("C:\\Users\\laolr\\Desktop\\dlv2"));
+		InputProgram facts = new ASPInputProgram();
+		try {
+			facts.addObjectInput(new Money(0, hisCashOffer));
+			facts.addObjectInput(new Money(1, myCashOffer));
+			for (Property property : myProperties) {
+				facts.addObjectInput(new OfferProperty(1, property.getId(), property.getValue()));
+			}
+			for (Airport airport : myAirports) {
+				facts.addObjectInput(new OfferProperty(1, airport.getId(), airport.getValue()));
+			}
+			for (Property property : hisProperties) {
+				facts.addObjectInput(new OfferProperty(0, property.getId(), property.getValue()));
+			}
+			for (Airport airport : hisAirports) {
+				facts.addObjectInput(new OfferProperty(0, airport.getId(), airport.getValue()));
+			}
+			for (Box box : board.getBoxes()) {
+				if (box instanceof Property) {
+					Property temp = (Property) box;
+					if (temp.getOwner() == null) {
+						facts.addObjectInput(new atoms.acceptExchange.Property(5, temp.getId()));
+					} else {
+						facts.addObjectInput(new atoms.acceptExchange.Property(temp.getOwner().getId(), temp.getId()));
+					}
+				} else if (box instanceof Airport) {
+					Airport temp = (Airport) box;
+					if (temp.getOwner() == null) {
+						facts.addObjectInput(new atoms.acceptExchange.Property(5, temp.getId()));
+					} else {
+						facts.addObjectInput(new atoms.acceptExchange.Property(temp.getOwner().getId(), temp.getId()));
+					}
+				}
+				ASPMapper.getInstance().registerClass(Accept.class);
+				ASPMapper.getInstance().registerClass(NoAccept.class);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		handler.addProgram(facts);
+		InputProgram encoding = new ASPInputProgram();
+		encoding.addFilesPath(encodingResource);
+		handler.addProgram(encoding);
+
+		Output o = handler.startSync();
+
+		AnswerSets answers = (AnswerSets) o;
+		System.out.println(answers.getAnswersets().size());
+		if (answers.getAnswersets().size() > 1) {
+			return false;
+		}
+		for (AnswerSet a : answers.getAnswersets()) {
+			System.out.println(a.toString());
+			try {
+				for (Object obj : a.getAtoms()) {
+					if (obj instanceof Accept) {
+						return true;
+					}
+				}
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+
+		}
+		return false;
+	}
+
+	public void aiBuyHouses(Board board) {
+		int moneyBound = this.cash / 2;
+		int moneySpent = 0;
+
+		String encodingResource = "encodings" + File.separator + "buyHouse.dlv";
+		Handler handler = new DesktopHandler(new DLV2DesktopService("C:\\Users\\laolr\\Desktop\\dlv2"));
+		InputProgram encoding = new ASPInputProgram();
+		encoding.addFilesPath(encodingResource);
+		handler.addProgram(encoding);
+
+		while (true) {
+			InputProgram facts = new ASPInputProgram();
+			try {
+				facts.addObjectInput(new MoneyBound(moneyBound - moneySpent));
+				for (Box box : board.getBoxes()) {
+					if (box instanceof Property) {
+						Property temp = (Property) box;
+						if (temp.getOwner() != null && temp.getOwner().getName().equals(this.name)) {
+							if (temp.getState() == PropertyState.MORTAGED) {
+								facts.addObjectInput(new Mortaged(temp.getId(), temp.getValue() / 2));
+							} else if (temp.getState() != PropertyState.NO_HOUSES
+									&& temp.getState() != PropertyState.ONE_HOTEL) {
+								facts.addObjectInput(new atoms.buyHouse.Property(temp.getId(), temp.getHouseCost()));
+							}
+						}
+					} else if (box instanceof Airport) {
+						Airport temp = (Airport) box;
+						if (temp.getOwner() != null && temp.getOwner().getName().equals(this.name)) {
+							if (temp.getState() == AirportState.MORTAGED) {
+								facts.addObjectInput(new Mortaged(temp.getId(), temp.getValue() / 2));
+							}
+						}
+					}
+					ASPMapper.getInstance().registerClass(MoneySpent.class);
+					ASPMapper.getInstance().registerClass(BuyHouse.class);
+					ASPMapper.getInstance().registerClass(NoBuyHouse.class);
+					ASPMapper.getInstance().registerClass(Unmortage.class);
+					ASPMapper.getInstance().registerClass(NoUnmortage.class);
+				}
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+			handler.addProgram(facts);
+
+			Output o = handler.startSync();
+
+			AnswerSets answers = (AnswerSets) o;
+			if (answers.getAnswersets().size() == 0) {
+				break;
+			}
+			AnswerSet a = answers.getAnswersets().get(0);
+			System.out.println(a.toString());
+			try {
+				StringBuilder builder = new StringBuilder();
+				for (Object obj : a.getAtoms()) {
+					if (obj instanceof BuyHouse) {
+						BuyHouse buyHouse = (BuyHouse) obj;
+						Property property = (Property) board.getBoxes().get(buyHouse.getProperty());
+						buyHouse(property);
+						builder.append(this.name + " acquista una casa a " + property.getName() + "\n");
+					} else if (obj instanceof Unmortage) {
+						Unmortage unmortage = (Unmortage) obj;
+						Box box = board.getBoxes().get(unmortage.getProperty());
+						if (box instanceof Property) {
+							Property property = (Property) box;
+							unMortageProperty(property);
+							builder.append(this.name + " riacquista la proprietà " + property.getName() + "\n");
+						} else if (box instanceof Airport) {
+							Airport airport = (Airport) box;
+							unMortageAirport(airport);
+							builder.append(this.name + " riacquista l'aereporto " + airport.getName() + "\n");
+						}
+					} else if (obj instanceof MoneySpent) {
+						MoneySpent moneySpentClass = (MoneySpent) obj;
+						moneySpent += moneySpentClass.getMoneySpent();
+					}
+					ApplicationController.lastEventString = builder.toString();
+				}
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+			handler.removeProgram(facts);
+		}
 	}
 
 }

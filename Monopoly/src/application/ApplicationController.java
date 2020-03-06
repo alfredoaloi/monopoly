@@ -576,7 +576,9 @@ public class ApplicationController {
 		}
 		refresh();
 
-		// TODO L'itelligenza fa scambi, compra case ecc
+		if (!(currentPlayer.isHuman())) {
+			currentPlayer.aiBuyHouses(board);
+		}
 	}
 
 	@FXML
@@ -755,8 +757,8 @@ public class ApplicationController {
 						}
 					}
 
-					if (otherPlayer.manageExchange(myCashOffer, hisCashOffer, myProperties, myAirports, hisProperties,
-							hisAirports)) {
+					if (otherPlayer.manageExchange(board.getCurrentPlayer(), myCashOffer, hisCashOffer, myProperties,
+							myAirports, hisProperties, hisAirports, board)) {
 						Alert finalAlert = new Alert(AlertType.INFORMATION);
 						finalAlert.setTitle("OFFERTA ACCETTATA");
 						finalAlert.setHeaderText(null);
@@ -771,6 +773,7 @@ public class ApplicationController {
 								"Il giocatore " + otherPlayer.getName() + " ha rifiutato la tua offerta");
 						finalAlert.showAndWait();
 					}
+					refresh();
 				}
 			}
 		}

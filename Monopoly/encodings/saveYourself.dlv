@@ -19,17 +19,17 @@ lossRent(C) :- C1 = #sum{V, X : sellHouse(X), property(X, V1, V2), V = V1 - V2},
 :- cashEarned(C), C = 0.
 
 % Quanto devo guadagnare
-moneyLeft(100).
+% moneyLeft(100).
 
 % numero proprietà, valore dell'affitto attuale, valore dell'affitto in caso di vendita casa (>0)/ipoteca (=0)
-property(1, 100, 0).
-sellHouseRevenue(1, 25).
-mortageRevenue(1, 90).
+% property(1, 100, 0).
+% sellHouseRevenue(1, 25).
+% mortageRevenue(1, 90).
 
-property(2, 150, 0).
-sellHouseRevenue(2, 50).
-mortageRevenue(2, 150).
+% property(2, 150, 0).
+% sellHouseRevenue(2, 50).
+% mortageRevenue(2, 150).
 
-property(3, 200, 0).
-sellHouseRevenue(3, 100).
-mortageRevenue(3, 200).
+% property(3, 200, 0).
+% sellHouseRevenue(3, 100).
+% mortageRevenue(3, 200).

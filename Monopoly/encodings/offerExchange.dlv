@@ -41,13 +41,13 @@ offerMoney(M) :- askedValue(V1), offeredValue(V2), M = V1 * 190 / 100.
 :- offer, playerMoney(1, M), askMoney(A), A > M.
 
 % le informazioni relative al tabellone: se il primo attributo Ã¨ 5 allora la proprietÃ  Ã¨ senza proprietario
-property(1, 6, 100).
-property(1, 8, 200).
-property(0, 9, 300).
+% property(1, 6, 100).
+% property(1, 8, 200).
+% property(0, 9, 300).
 
 % Soldi dei giocatori
-playerMoney(0, 1000).
-playerMoney(1, 550).
+% playerMoney(0, 1000).
+% playerMoney(1, 550).
 
 % Gruppi di proprietÃ , sempre questi.
 group(0, 1).

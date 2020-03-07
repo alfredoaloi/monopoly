@@ -565,13 +565,19 @@ public class ApplicationController {
 
 		endTurnButton.setDisable(false);
 		continueButton.setDisable(true);
+		
+		if (!(currentPlayer.isHuman())) {
+			currentPlayer.aiOfferExchange(board);
+			lastEventTextArea.appendText(lastEventString + "\n");
+		}
+		refresh();
 
 		if (currentPlayer.getCash() < 0) {
 			lastEventTextArea.appendText("Il giocatore " + currentPlayer.getName()
 					+ " non ha abbastanza soldi, deve vendere case e/o ipotecare qualche proprietà\n");
 			if (!(currentPlayer.isHuman())) {
 				currentPlayer.tryToSaveYourself(board);
-				lastEventTextArea.appendText(lastEventString);
+				lastEventTextArea.appendText(lastEventString + "\n");
 			}
 		}
 		refresh();
@@ -579,6 +585,7 @@ public class ApplicationController {
 		if (!(currentPlayer.isHuman())) {
 			currentPlayer.aiBuyHouses(board);
 		}
+		refresh();
 	}
 
 	@FXML

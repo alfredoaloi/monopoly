@@ -128,7 +128,6 @@ public class Property extends Box {
 						player.payToBank(this.value);
 						this.owner = player;
 						this.state = PropertyState.NO_HOUSES;
-						player.setProperties(player.getProperties() + 1);
 					} else {
 						System.out.println("In teoria va all'asta");
 					}
@@ -140,7 +139,6 @@ public class Property extends Box {
 						player.payToBank(this.value);
 						this.owner = player;
 						this.state = PropertyState.NO_HOUSES;
-						player.setProperties(player.getProperties() + 1);
 					} else {
 						ApplicationController.lastEventString = "Il giocatore " + player.getName()
 								+ " ha deciso di non acquistare la proprietà!";

@@ -121,7 +121,6 @@ public class Airport extends Box {
 						player.payToBank(this.value);
 						this.owner = player;
 						this.state = AirportState.ONE_AIRPORT;
-						player.setProperties(player.getProperties() + 1);
 					} else {
 						System.out.println("In teoria va all'asta");
 					}
@@ -133,7 +132,6 @@ public class Airport extends Box {
 						player.payToBank(this.value);
 						this.owner = player;
 						this.state = AirportState.ONE_AIRPORT;
-						player.setProperties(player.getProperties() + 1);
 					} else {
 						ApplicationController.lastEventString = "Il giocatore " + player.getName()
 								+ " ha deciso di non acquistare l'aereoporto!";
@@ -165,14 +163,13 @@ public class Airport extends Box {
 		}
 		for (int propertyIndex : sameGroupPositions) {
 			Airport other = (Airport) board.getBoxes().get(propertyIndex);
-			if (other.getOwner() != null) {
+			if (other.getOwner() != null && this.owner != null && other.getOwner().getName().equals(owner.getName())) {
 				if (other.getState() != AirportState.MORTAGED) {
 					other.setState(AirportState.values()[count]);
 				}
 			}
 		}
 		this.state = AirportState.values()[count];
-		System.out.println("tutto il gruppo");
 	}
 
 }

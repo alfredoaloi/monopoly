@@ -51,8 +51,8 @@ import it.unical.mat.embasp.languages.asp.AnswerSets;
 import it.unical.mat.embasp.platforms.desktop.DesktopHandler;
 import it.unical.mat.embasp.specializations.dlv2.desktop.DLV2DesktopService;
 import javafx.scene.control.Alert;
-import javafx.scene.control.ButtonType;
 import javafx.scene.control.Alert.AlertType;
+import javafx.scene.control.ButtonType;
 
 public class Player {
 
@@ -60,7 +60,6 @@ public class Player {
 	private String name;
 	private int cash;
 	private int position;
-	private int properties;
 	private boolean human;
 	private int daysInPrison;
 
@@ -71,7 +70,6 @@ public class Player {
 		this.cash = cash;
 		this.human = human;
 		position = 0;
-		properties = 0;
 		daysInPrison = 0;
 	}
 
@@ -107,12 +105,22 @@ public class Player {
 		this.position = position;
 	}
 
-	public int getProperties() {
-		return properties;
-	}
-
-	public void setProperties(int properties) {
-		this.properties = properties;
+	public int getProperties(Board board) {
+		int count = 0;
+		for (Box box : board.getBoxes()) {
+			if (box instanceof Property) {
+				Property temp = (Property) box;
+				if (temp.getOwner() != null && temp.getOwner().getName().equals(this.name)) {
+					count++;
+				}
+			} else if (box instanceof Airport) {
+				Airport temp = (Airport) box;
+				if (temp.getOwner() != null && temp.getOwner().getName().equals(this.name)) {
+					count++;
+				}
+			}
+		}
+		return count;
 	}
 
 	public boolean isHuman() {
@@ -469,17 +477,17 @@ public class Player {
 			for (Box box : board.getBoxes()) {
 				if (box instanceof Property) {
 					Property temp = (Property) box;
-					if (temp.getOwner() == null) {
-						facts.addObjectInput(new atoms.acceptExchange.Property(5, temp.getId()));
-					} else {
-						facts.addObjectInput(new atoms.acceptExchange.Property(temp.getOwner().getId(), temp.getId()));
+					if (temp.getOwner() != null && temp.getOwner().getName().equals(this.name)) {
+						facts.addObjectInput(new atoms.acceptExchange.Property(0, temp.getId()));
+					} else if (temp.getOwner() != null && temp.getOwner().getName().equals(currentPlayer.name)) {
+						facts.addObjectInput(new atoms.acceptExchange.Property(1, temp.getId()));
 					}
 				} else if (box instanceof Airport) {
 					Airport temp = (Airport) box;
-					if (temp.getOwner() == null) {
-						facts.addObjectInput(new atoms.acceptExchange.Property(5, temp.getId()));
-					} else {
-						facts.addObjectInput(new atoms.acceptExchange.Property(temp.getOwner().getId(), temp.getId()));
+					if (temp.getOwner() != null && temp.getOwner().getName().equals(this.name)) {
+						facts.addObjectInput(new atoms.acceptExchange.Property(0, temp.getId()));
+					} else if (temp.getOwner() != null && temp.getOwner().getName().equals(currentPlayer.name)) {
+						facts.addObjectInput(new atoms.acceptExchange.Property(1, temp.getId()));
 					}
 				}
 				ASPMapper.getInstance().registerClass(Accept.class);

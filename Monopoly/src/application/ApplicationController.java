@@ -182,7 +182,31 @@ public class ApplicationController {
 
 				@Override
 				public void handle(Event event) {
-					if (board.getCurrentPlayer().isHuman()) {
+					if (!(board.getCurrentPlayer().isHuman())) {
+						if (board.getBoxes().get(j) instanceof Property) {
+							Property property = (Property) board.getBoxes().get(j);
+							Alert alert = new Alert(AlertType.NONE);
+							alert.setTitle(board.getBoxes().get(j).getName());
+							alert.setHeaderText(null);
+							alert.setContentText("Valore :" + property.getValue() + "\nProprietario: "
+									+ (property.getOwner() == null ? "Nessuno" : property.getOwner().getName())
+									+ "\nStato: " + property.getState());
+							ButtonType cancel = new ButtonType("Annulla", ButtonData.CANCEL_CLOSE);
+							alert.getButtonTypes().add(cancel);
+							alert.showAndWait();
+						} else if (board.getBoxes().get(j) instanceof Airport) {
+							Airport airport = (Airport) board.getBoxes().get(j);
+							Alert alert = new Alert(AlertType.NONE);
+							alert.setTitle(board.getBoxes().get(j).getName());
+							alert.setHeaderText(null);
+							alert.setContentText("Valore :" + airport.getValue() + "\nProprietario: "
+									+ (airport.getOwner() == null ? "Nessuno" : airport.getOwner().getName())
+									+ "\nStato: " + airport.getState());
+							ButtonType cancel = new ButtonType("Annulla", ButtonData.CANCEL_CLOSE);
+							alert.getButtonTypes().add(cancel);
+							alert.showAndWait();
+						}
+					} else {
 						if (board.getBoxes().get(j) instanceof Property) {
 							Property property = (Property) board.getBoxes().get(j);
 							Alert alert = new Alert(AlertType.NONE);
@@ -791,6 +815,11 @@ public class ApplicationController {
 								"Il giocatore " + otherPlayer.getName() + " ha rifiutato la tua offerta");
 						finalAlert.showAndWait();
 					}
+					if (!(lastEventString.equals(""))) {
+						lastEventTextArea
+								.appendText("[" + board.getCurrentPlayer().getName() + "] " + lastEventString + "\n");
+					}
+					lastEventString = "";
 					refresh();
 				}
 			}
@@ -803,10 +832,10 @@ public class ApplicationController {
 		player3CashLabel.setText("Cash " + board.getPlayers().get(2).getCash());
 		player4CashLabel.setText("Cash " + board.getPlayers().get(3).getCash());
 
-		player1PropertiesLabel.setText("Proprietà " + board.getPlayers().get(0).getProperties());
-		player2PropertiesLabel.setText("Proprietà " + board.getPlayers().get(1).getProperties());
-		player3PropertiesLabel.setText("Proprietà " + board.getPlayers().get(2).getProperties());
-		player4PropertiesLabel.setText("Proprietà " + board.getPlayers().get(3).getProperties());
+		player1PropertiesLabel.setText("Proprietà " + board.getPlayers().get(0).getProperties(board));
+		player2PropertiesLabel.setText("Proprietà " + board.getPlayers().get(1).getProperties(board));
+		player3PropertiesLabel.setText("Proprietà " + board.getPlayers().get(2).getProperties(board));
+		player4PropertiesLabel.setText("Proprietà " + board.getPlayers().get(3).getProperties(board));
 	}
 
 }

@@ -34,6 +34,11 @@ offerMoney(M) :- askedValue(V1), offeredValue(V2), M = V1 * 190 / 100.
 :- askMoney(_), noOffer.
 :- offerMoney(_), noOffer.
 
+offers :- askProperty(_, _).
+offers :- offerProperty(_, _).
+
+:- offer, not offers.
+
 % 5 Non voglio sperperare tutti i miei soldi
 :- offer, playerMoney(0, M), offerMoney(O), M - O < M * 20 / 100.
 

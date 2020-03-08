@@ -22,9 +22,11 @@ import atoms.buyProperty.CurrentPlayer;
 import atoms.buyProperty.CurrentPlayerMoney;
 import atoms.buyProperty.NoBuy;
 import atoms.buyProperty.PropertyToBuy;
+import atoms.offerExchange.AskMoney;
 import atoms.offerExchange.AskProperty;
 import atoms.offerExchange.NoOffer;
 import atoms.offerExchange.Offer;
+import atoms.offerExchange.OfferMoney;
 import atoms.offerExchange.PlayerMoney;
 import atoms.saveYourself.CashEarned;
 import atoms.saveYourself.MoneyLeft;
@@ -218,7 +220,7 @@ public class Player {
 				property.checkAllGroup();
 			}
 			for (Airport airport : hisAirports) {
-				airport.setOwner(this);
+				airport.setOwner(currentPlayer);
 				airport.checkAllGroup();
 			}
 			ApplicationController.lastEventString = "Scambio accettato da " + this.name;
@@ -613,6 +615,14 @@ public class Player {
 				boolean offer = true;
 				boolean accepted = false;
 
+				int myCashOffer = 0;
+				int hisCashOffer = 0;
+
+				ArrayList<Property> myProperties = new ArrayList<Property>();
+				ArrayList<Airport> myAirports = new ArrayList<Airport>();
+				ArrayList<Property> hisProperties = new ArrayList<Property>();
+				ArrayList<Airport> hisAirports = new ArrayList<Airport>();
+
 				String encodingResource = "encodings" + File.separator + "offerExchange.dlv";
 				Handler handler = new DesktopHandler(new DLV2DesktopService("C:\\Users\\laolr\\Desktop\\dlv2"));
 				InputProgram facts = new ASPInputProgram();
@@ -648,6 +658,8 @@ public class Player {
 						ASPMapper.getInstance().registerClass(NoOffer.class);
 						ASPMapper.getInstance().registerClass(AskProperty.class);
 						ASPMapper.getInstance().registerClass(atoms.offerExchange.OfferProperty.class);
+						ASPMapper.getInstance().registerClass(AskMoney.class);
+						ASPMapper.getInstance().registerClass(OfferMoney.class);
 					}
 				} catch (Exception e) {
 					e.printStackTrace();
@@ -661,36 +673,84 @@ public class Player {
 
 				AnswerSets answers = (AnswerSets) o;
 				System.out.println(answers.getAnswersets().size());
-				if (answers.getAnswersets().size() > 1) {
-					return false;
-				}
-				for (AnswerSet a : answers.getAnswersets()) {
+				if (answers.getAnswersets().size() == 0) {
+					offer = false;
+				} else {
+					AnswerSet a = answers.getAnswersets().get(0);
 					System.out.println(a.toString());
 					try {
 						for (Object obj : a.getAtoms()) {
-							if (obj instanceof Buy) {
-								return true;
+							if (obj instanceof Offer) {
+								offer = true;
+							} else if (obj instanceof AskProperty) {
+								AskProperty askProperty = (AskProperty) obj;
+								Box box = board.getBoxes().get(askProperty.getProperty());
+								if (box instanceof Property) {
+									Property property = (Property) box;
+									hisProperties.add(property);
+								} else if (box instanceof Airport) {
+									Airport airport = (Airport) box;
+									hisAirports.add(airport);
+								}
+							} else if (obj instanceof atoms.offerExchange.OfferProperty) {
+								atoms.offerExchange.OfferProperty offerProperty = (atoms.offerExchange.OfferProperty) obj;
+								Box box = board.getBoxes().get(offerProperty.getProperty());
+								if (box instanceof Property) {
+									Property property = (Property) box;
+									myProperties.add(property);
+								} else if (box instanceof Airport) {
+									Airport airport = (Airport) box;
+									myAirports.add(airport);
+								}
+							} else if (obj instanceof AskMoney) {
+								AskMoney askMoney = (AskMoney) obj;
+								hisCashOffer = askMoney.getMoney();
+							} else if (obj instanceof OfferMoney) {
+								OfferMoney offerMoney = (OfferMoney) obj;
+								myCashOffer = offerMoney.getMoney();
 							}
 						}
 					} catch (Exception e) {
 						e.printStackTrace();
 					}
-
 				}
-				return false;
+
+				if (myCashOffer > hisCashOffer) {
+					myCashOffer -= hisCashOffer;
+					hisCashOffer = 0;
+				} else {
+					hisCashOffer -= myCashOffer;
+					myCashOffer = 0;
+				}
 
 				if (offer) {
 					if (!(player.isHuman())) {
-//						if (player.aiAcceptExchange(null, null, null, null, null, null, null, board)) {
-//							accepted = true;
-//						}
+						if (player.aiAcceptExchange(this, myCashOffer, hisCashOffer, myProperties, myAirports,
+								hisProperties, hisAirports, board)) {
+							accepted = true;
+						}
 					} else {
 						Alert alert = new Alert(AlertType.CONFIRMATION);
 						alert.setTitle(this.name + " TI HA FATTO UN'OFFERTA");
 						alert.setHeaderText(null);
 						StringBuilder builder = new StringBuilder();
 						builder.append("Offerta:\n");
-						// for
+						builder.append(this.name + ":\n");
+						builder.append("Soldi: " + myCashOffer + "\n");
+						for (Property temp : myProperties) {
+							builder.append(temp.getName() + " - " + temp.getValue() + "\n");
+						}
+						for (Airport temp : myAirports) {
+							builder.append(temp.getName() + " - " + temp.getValue() + "\n");
+						}
+						builder.append(player.name + ":\n");
+						builder.append("Soldi: " + hisCashOffer + "\n");
+						for (Property temp : hisProperties) {
+							builder.append(temp.getName() + " - " + temp.getValue() + "\n");
+						}
+						for (Airport temp : hisAirports) {
+							builder.append(temp.getName() + " - " + temp.getValue() + "\n");
+						}
 						alert.setContentText(builder.toString());
 						Optional<ButtonType> result = alert.showAndWait();
 						if (result.get() == ButtonType.OK) {
@@ -699,10 +759,32 @@ public class Player {
 					}
 
 					if (accepted) {
-						System.out.println("accettato");
+						this.cash += hisCashOffer;
+						this.cash -= myCashOffer;
+						player.cash += myCashOffer;
+						player.cash -= hisCashOffer;
+						for (Property property : myProperties) {
+							property.setOwner(player);
+							property.checkAllGroup();
+						}
+						for (Airport airport : myAirports) {
+							airport.setOwner(player);
+							airport.checkAllGroup();
+						}
+						for (Property property : hisProperties) {
+							property.setOwner(this);
+							property.checkAllGroup();
+						}
+						for (Airport airport : hisAirports) {
+							airport.setOwner(this);
+							airport.checkAllGroup();
+						}
+
+						ApplicationController.lastEventString = "Il giocatore " + player.getName()
+								+ " ha accettato lo scambio!\n";
 					} else {
 						ApplicationController.lastEventString = "Il giocatore " + player.getName()
-								+ " ha rifiutato lo scambio!";
+								+ " ha rifiutato lo scambio!\n";
 					}
 				}
 			}

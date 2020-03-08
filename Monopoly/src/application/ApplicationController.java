@@ -565,10 +565,10 @@ public class ApplicationController {
 
 		endTurnButton.setDisable(false);
 		continueButton.setDisable(true);
-		
+
 		if (!(currentPlayer.isHuman())) {
 			currentPlayer.aiOfferExchange(board);
-			lastEventTextArea.appendText(lastEventString + "\n");
+			lastEventTextArea.appendText(lastEventString);
 		}
 		refresh();
 
@@ -652,13 +652,18 @@ public class ApplicationController {
 					Property property = (Property) box;
 					if (property.getOwner() != null
 							&& property.getOwner().getName().equals(board.getCurrentPlayer().getName())) {
-						vBox.getChildren().add(new CheckBox(property.getName() + " - $" + property.getValue()));
+						if (property.getState() == PropertyState.NO_HOUSES
+								|| property.getState() == PropertyState.ALL_GROUP) {
+							vBox.getChildren().add(new CheckBox(property.getName() + " - $" + property.getValue()));
+						}
 					}
 				} else if (box instanceof Airport) {
 					Airport airport = (Airport) box;
 					if (airport.getOwner() != null
 							&& airport.getOwner().getName().equals(board.getCurrentPlayer().getName())) {
-						vBox.getChildren().add(new CheckBox(airport.getName() + " - $" + airport.getValue()));
+						if (airport.getState() != AirportState.MORTAGED) {
+							vBox.getChildren().add(new CheckBox(airport.getName() + " - $" + airport.getValue()));
+						}
 					}
 				}
 			}
@@ -692,13 +697,19 @@ public class ApplicationController {
 						Property property = (Property) box;
 						if (property.getOwner() != null
 								&& property.getOwner().getName().equals(otherPlayer.getName())) {
-							otherVBox.getChildren()
-									.add(new CheckBox(property.getName() + " - $" + property.getValue()));
+							if (property.getState() == PropertyState.NO_HOUSES
+									|| property.getState() == PropertyState.ALL_GROUP) {
+								otherVBox.getChildren()
+										.add(new CheckBox(property.getName() + " - $" + property.getValue()));
+							}
 						}
 					} else if (box instanceof Airport) {
 						Airport airport = (Airport) box;
 						if (airport.getOwner() != null && airport.getOwner().getName().equals(otherPlayer.getName())) {
-							otherVBox.getChildren().add(new CheckBox(airport.getName() + " - $" + airport.getValue()));
+							if (airport.getState() != AirportState.MORTAGED) {
+								otherVBox.getChildren()
+										.add(new CheckBox(airport.getName() + " - $" + airport.getValue()));
+							}
 						}
 					}
 				}

@@ -244,7 +244,7 @@ public class Player {
 		int moneyLeft = -this.cash;
 
 		String encodingResource = "encodings" + File.separator + "saveYourself.dlv";
-		Handler handler = new DesktopHandler(new DLV2DesktopService("C:\\Users\\laolr\\Desktop\\dlv2"));
+		Handler handler = new DesktopHandler(new DLV2DesktopService("." + File.separator + "lib" + File.separator + "dlv2"));
 		InputProgram encoding = new ASPInputProgram();
 		encoding.addFilesPath(encodingResource);
 		handler.addProgram(encoding);
@@ -339,7 +339,7 @@ public class Player {
 
 	public boolean aiBuyProperty(Property property, Board board) {
 		String encodingResource = "encodings" + File.separator + "buyProperty.dlv";
-		Handler handler = new DesktopHandler(new DLV2DesktopService("C:\\Users\\laolr\\Desktop\\dlv2"));
+		Handler handler = new DesktopHandler(new DLV2DesktopService("." + File.separator + "lib" + File.separator + "dlv2"));
 		InputProgram facts = new ASPInputProgram();
 		try {
 			facts.addObjectInput(new CurrentPlayer(this.id));
@@ -397,7 +397,7 @@ public class Player {
 
 	public boolean aiBuyAirport(Airport airport, Board board) {
 		String encodingResource = "encodings" + File.separator + "buyProperty.dlv";
-		Handler handler = new DesktopHandler(new DLV2DesktopService("C:\\Users\\laolr\\Desktop\\dlv2"));
+		Handler handler = new DesktopHandler(new DLV2DesktopService("." + File.separator + "lib" + File.separator + "dlv2"));
 		InputProgram facts = new ASPInputProgram();
 		try {
 			facts.addObjectInput(new CurrentPlayer(this.id));
@@ -457,7 +457,7 @@ public class Player {
 			ArrayList<Property> myProperties, ArrayList<Airport> myAirports, ArrayList<Property> hisProperties,
 			ArrayList<Airport> hisAirports, Board board) {
 		String encodingResource = "encodings" + File.separator + "acceptExchange.dlv";
-		Handler handler = new DesktopHandler(new DLV2DesktopService("C:\\Users\\laolr\\Desktop\\dlv2"));
+		Handler handler = new DesktopHandler(new DLV2DesktopService("." + File.separator + "lib" + File.separator + "dlv2"));
 		InputProgram facts = new ASPInputProgram();
 		try {
 			facts.addObjectInput(new Money(0, hisCashOffer));
@@ -529,7 +529,7 @@ public class Player {
 		int moneySpent = 0;
 
 		String encodingResource = "encodings" + File.separator + "buyHouse.dlv";
-		Handler handler = new DesktopHandler(new DLV2DesktopService("C:\\Users\\laolr\\Desktop\\dlv2"));
+		Handler handler = new DesktopHandler(new DLV2DesktopService("." + File.separator + "lib" + File.separator + "dlv2"));
 		InputProgram encoding = new ASPInputProgram();
 		encoding.addFilesPath(encodingResource);
 		handler.addProgram(encoding);
@@ -632,7 +632,7 @@ public class Player {
 				ArrayList<Airport> hisAirports = new ArrayList<Airport>();
 
 				String encodingResource = "encodings" + File.separator + "offerExchange.dlv";
-				Handler handler = new DesktopHandler(new DLV2DesktopService("C:\\Users\\laolr\\Desktop\\dlv2"));
+				Handler handler = new DesktopHandler(new DLV2DesktopService("." + File.separator + "lib" + File.separator + "dlv2"));
 				InputProgram facts = new ASPInputProgram();
 				try {
 					facts.addObjectInput(new PlayerMoney(0, this.cash));

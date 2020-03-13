@@ -12,4 +12,5 @@ Alcune delle scelte alla quale è sottoposta l'**intelligenza artificiale**:
 - Riacquisto proprietà precedentemente ipotecate
 - Proposte di scambio
 - Valutazione di scambio
-- Ipoteca e vendita di case in caso di rischio bancarotta.
+- Ipoteca e vendita di case in caso di rischio bancarotta
+che sono le stesse cose che può fare il giocatore umano.

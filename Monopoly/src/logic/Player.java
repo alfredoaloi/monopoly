@@ -318,6 +318,7 @@ public class Player {
 						SellHouse sellHouse = (SellHouse) obj;
 						Property property = (Property) board.getBoxes().get(sellHouse.getProperty());
 						sellHouse(property);
+						property.checkAllGroup();
 						builder.append(this.name + " vende una casa a " + property.getName() + "\n");
 					} else if (obj instanceof Mortage) {
 						Mortage mortage = (Mortage) obj;

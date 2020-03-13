@@ -210,28 +210,39 @@ public class Player {
 		boolean accepted = aiAcceptExchange(currentPlayer, myCashOffer, hisCashOffer, myProperties, myAirports,
 				hisProperties, hisAirports, board);
 
+		StringBuilder builder = new StringBuilder();
 		if (accepted) {
 			currentPlayer.cash += hisCashOffer;
 			currentPlayer.cash -= myCashOffer;
 			this.cash += myCashOffer;
 			this.cash -= hisCashOffer;
+			builder.append(currentPlayer.getName() + " offre uno scambio a " + this.name + "\n");
+			builder.append("Soldi offerti da " + currentPlayer.getName() + ": " + myCashOffer + "\n");
+			builder.append("Soldi offerti da " + this.name + ": " + hisCashOffer + "\n");
+			builder.append("Proprietà offerte da " + currentPlayer.getName() + ":\n");
 			for (Property property : myProperties) {
 				property.setOwner(this);
 				property.checkAllGroup();
+				builder.append(property.getName() + "\n");
 			}
 			for (Airport airport : myAirports) {
 				airport.setOwner(this);
 				airport.checkAllGroup();
+				builder.append(airport.getName() + "\n");
 			}
+			builder.append("Proprietà offerte da " + this.name + ":\n");
 			for (Property property : hisProperties) {
 				property.setOwner(currentPlayer);
 				property.checkAllGroup();
+				builder.append(property.getName() + "\n");
 			}
 			for (Airport airport : hisAirports) {
 				airport.setOwner(currentPlayer);
 				airport.checkAllGroup();
+				builder.append(airport.getName() + "\n");
 			}
-			ApplicationController.lastEventString = "Scambio accettato da " + this.name;
+			builder.append("Scambio accettato da " + this.name);
+			ApplicationController.lastEventString = builder.toString();
 			return true;
 		} else {
 			return false;
@@ -244,7 +255,8 @@ public class Player {
 		int moneyLeft = -this.cash;
 
 		String encodingResource = "encodings" + File.separator + "saveYourself.dlv";
-		Handler handler = new DesktopHandler(new DLV2DesktopService("." + File.separator + "lib" + File.separator + "dlv2"));
+		Handler handler = new DesktopHandler(
+				new DLV2DesktopService("." + File.separator + "lib" + File.separator + "dlv2"));
 		InputProgram encoding = new ASPInputProgram();
 		encoding.addFilesPath(encodingResource);
 		handler.addProgram(encoding);
@@ -339,7 +351,8 @@ public class Player {
 
 	public boolean aiBuyProperty(Property property, Board board) {
 		String encodingResource = "encodings" + File.separator + "buyProperty.dlv";
-		Handler handler = new DesktopHandler(new DLV2DesktopService("." + File.separator + "lib" + File.separator + "dlv2"));
+		Handler handler = new DesktopHandler(
+				new DLV2DesktopService("." + File.separator + "lib" + File.separator + "dlv2"));
 		InputProgram facts = new ASPInputProgram();
 		try {
 			facts.addObjectInput(new CurrentPlayer(this.id));
@@ -397,7 +410,8 @@ public class Player {
 
 	public boolean aiBuyAirport(Airport airport, Board board) {
 		String encodingResource = "encodings" + File.separator + "buyProperty.dlv";
-		Handler handler = new DesktopHandler(new DLV2DesktopService("." + File.separator + "lib" + File.separator + "dlv2"));
+		Handler handler = new DesktopHandler(
+				new DLV2DesktopService("." + File.separator + "lib" + File.separator + "dlv2"));
 		InputProgram facts = new ASPInputProgram();
 		try {
 			facts.addObjectInput(new CurrentPlayer(this.id));
@@ -457,7 +471,8 @@ public class Player {
 			ArrayList<Property> myProperties, ArrayList<Airport> myAirports, ArrayList<Property> hisProperties,
 			ArrayList<Airport> hisAirports, Board board) {
 		String encodingResource = "encodings" + File.separator + "acceptExchange.dlv";
-		Handler handler = new DesktopHandler(new DLV2DesktopService("." + File.separator + "lib" + File.separator + "dlv2"));
+		Handler handler = new DesktopHandler(
+				new DLV2DesktopService("." + File.separator + "lib" + File.separator + "dlv2"));
 		InputProgram facts = new ASPInputProgram();
 		try {
 			facts.addObjectInput(new Money(0, hisCashOffer));
@@ -529,11 +544,13 @@ public class Player {
 		int moneySpent = 0;
 
 		String encodingResource = "encodings" + File.separator + "buyHouse.dlv";
-		Handler handler = new DesktopHandler(new DLV2DesktopService("." + File.separator + "lib" + File.separator + "dlv2"));
+		Handler handler = new DesktopHandler(
+				new DLV2DesktopService("." + File.separator + "lib" + File.separator + "dlv2"));
 		InputProgram encoding = new ASPInputProgram();
 		encoding.addFilesPath(encodingResource);
 		handler.addProgram(encoding);
 
+		StringBuilder builder = new StringBuilder();
 		while (true) {
 			InputProgram facts = new ASPInputProgram();
 			try {
@@ -583,7 +600,6 @@ public class Player {
 			AnswerSet a = answers.getAnswersets().get(0);
 			System.out.println(a.toString());
 			try {
-				StringBuilder builder = new StringBuilder();
 				for (Object obj : a.getAtoms()) {
 					if (obj instanceof BuyHouse) {
 						BuyHouse buyHouse = (BuyHouse) obj;
@@ -608,13 +624,13 @@ public class Player {
 						MoneySpent moneySpentClass = (MoneySpent) obj;
 						moneySpent += moneySpentClass.getMoneySpent();
 					}
-					ApplicationController.lastEventString = builder.toString();
 				}
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
 			handler.removeProgram(facts);
 		}
+		ApplicationController.lastEventString = builder.toString();
 	}
 
 	public void aiOfferExchange(Board board) {
@@ -632,7 +648,8 @@ public class Player {
 				ArrayList<Airport> hisAirports = new ArrayList<Airport>();
 
 				String encodingResource = "encodings" + File.separator + "offerExchange.dlv";
-				Handler handler = new DesktopHandler(new DLV2DesktopService("." + File.separator + "lib" + File.separator + "dlv2"));
+				Handler handler = new DesktopHandler(
+						new DLV2DesktopService("." + File.separator + "lib" + File.separator + "dlv2"));
 				InputProgram facts = new ASPInputProgram();
 				try {
 					facts.addObjectInput(new PlayerMoney(0, this.cash));
@@ -771,25 +788,35 @@ public class Player {
 						this.cash -= myCashOffer;
 						player.cash += myCashOffer;
 						player.cash -= hisCashOffer;
+						StringBuilder builder = new StringBuilder();
+						builder.append(this.name + " offre uno scambio a " + player.getName() + "\n");
+						builder.append("Soldi offerti da " + this.name + ": " + myCashOffer + "\n");
+						builder.append("Soldi offerti da " + player.getName() + ": " + hisCashOffer + "\n");
+						builder.append("Proprietà offerte da " + this.name + ":\n");
 						for (Property property : myProperties) {
 							property.setOwner(player);
 							property.checkAllGroup();
+							builder.append(property.getName() + "\n");
 						}
 						for (Airport airport : myAirports) {
 							airport.setOwner(player);
 							airport.checkAllGroup();
+							builder.append(airport.getName() + "\n");
 						}
+						builder.append("Proprietà offerte da " + player.getName() + ":\n");
 						for (Property property : hisProperties) {
 							property.setOwner(this);
 							property.checkAllGroup();
+							builder.append(property.getName() + "\n");
 						}
 						for (Airport airport : hisAirports) {
 							airport.setOwner(this);
 							airport.checkAllGroup();
+							builder.append(airport.getName() + "\n");
 						}
+						builder.append("Il giocatore " + player.getName() + " ha accettato lo scambio!\n");
 
-						ApplicationController.lastEventString = "Il giocatore " + player.getName()
-								+ " ha accettato lo scambio!\n";
+						ApplicationController.lastEventString = builder.toString();
 					} else {
 						ApplicationController.lastEventString = "Il giocatore " + player.getName()
 								+ " ha rifiutato lo scambio!\n";

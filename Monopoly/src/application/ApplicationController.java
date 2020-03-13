@@ -592,7 +592,10 @@ public class ApplicationController {
 
 		if (!(currentPlayer.isHuman())) {
 			currentPlayer.aiOfferExchange(board);
-			lastEventTextArea.appendText(lastEventString);
+			if (!(lastEventString.equals(""))) {
+				lastEventTextArea.appendText(lastEventString);
+			}
+			lastEventString = "";
 		}
 		refresh();
 
@@ -601,13 +604,20 @@ public class ApplicationController {
 					+ " non ha abbastanza soldi, deve vendere case e/o ipotecare qualche proprietà\n");
 			if (!(currentPlayer.isHuman())) {
 				currentPlayer.tryToSaveYourself(board);
-				lastEventTextArea.appendText(lastEventString + "\n");
+				if (!(lastEventString.equals(""))) {
+					lastEventTextArea.appendText(lastEventString + "\n");
+				}
+				lastEventString = "";
 			}
 		}
 		refresh();
 
 		if (!(currentPlayer.isHuman())) {
 			currentPlayer.aiBuyHouses(board);
+			if (!(lastEventString.equals(""))) {
+				lastEventTextArea.appendText(lastEventString);
+			}
+			lastEventString = "";
 		}
 		refresh();
 	}
@@ -827,15 +837,17 @@ public class ApplicationController {
 	}
 
 	private void refresh() {
-		player1CashLabel.setText("Cash " + board.getPlayers().get(0).getCash());
-		player2CashLabel.setText("Cash " + board.getPlayers().get(1).getCash());
-		player3CashLabel.setText("Cash " + board.getPlayers().get(2).getCash());
-		player4CashLabel.setText("Cash " + board.getPlayers().get(3).getCash());
+		if (!(board.isEndgame())) {
+			player1CashLabel.setText("Cash " + board.getPlayers().get(0).getCash());
+			player2CashLabel.setText("Cash " + board.getPlayers().get(1).getCash());
+			player3CashLabel.setText("Cash " + board.getPlayers().get(2).getCash());
+			player4CashLabel.setText("Cash " + board.getPlayers().get(3).getCash());
 
-		player1PropertiesLabel.setText("Proprietà " + board.getPlayers().get(0).getProperties(board));
-		player2PropertiesLabel.setText("Proprietà " + board.getPlayers().get(1).getProperties(board));
-		player3PropertiesLabel.setText("Proprietà " + board.getPlayers().get(2).getProperties(board));
-		player4PropertiesLabel.setText("Proprietà " + board.getPlayers().get(3).getProperties(board));
+			player1PropertiesLabel.setText("Proprietà " + board.getPlayers().get(0).getProperties(board));
+			player2PropertiesLabel.setText("Proprietà " + board.getPlayers().get(1).getProperties(board));
+			player3PropertiesLabel.setText("Proprietà " + board.getPlayers().get(2).getProperties(board));
+			player4PropertiesLabel.setText("Proprietà " + board.getPlayers().get(3).getProperties(board));
+		}
 	}
 
 }

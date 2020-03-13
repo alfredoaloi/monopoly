@@ -164,29 +164,32 @@ public class Board {
 	}
 
 	public void finalPlacement() {
+		endgame = true;
 		for (Player player : players) {
-			for (Box box : boxes) {
-				if (box instanceof Property) {
-					Property property = (Property) box;
-					if (property.getOwner() != null && property.getOwner().getName().equals(player.getName())) {
-						while (property.getState() != PropertyState.NO_HOUSES
-								&& property.getState() != PropertyState.ALL_GROUP
-								&& property.getState() != PropertyState.MORTAGED) {
-							player.sellHouse(property);
+			if (player.getCash() >= 0) {
+				for (Box box : boxes) {
+					if (box instanceof Property) {
+						Property property = (Property) box;
+						if (property.getOwner() != null && property.getOwner().getName().equals(player.getName())) {
+							while (property.getState() != PropertyState.NO_HOUSES
+									&& property.getState() != PropertyState.ALL_GROUP
+									&& property.getState() != PropertyState.MORTAGED) {
+								player.sellHouse(property);
+							}
+							if (property.getState() == PropertyState.MORTAGED) {
+								player.setCash(player.getCash() + (property.getValue() / 2));
+							} else {
+								player.setCash(player.getCash() + property.getValue());
+							}
 						}
-						if (property.getState() == PropertyState.MORTAGED) {
-							player.setCash(player.getCash() + (property.getValue() / 2));
-						} else {
-							player.setCash(player.getCash() + property.getValue());
-						}
-					}
-				} else if (box instanceof Airport) {
-					Airport airport = (Airport) box;
-					if (airport.getOwner() != null && airport.getOwner().getName().equals(player.getName())) {
-						if (airport.getState() == AirportState.MORTAGED) {
-							player.setCash(player.getCash() + (airport.getValue() / 2));
-						} else {
-							player.setCash(player.getCash() + airport.getValue());
+					} else if (box instanceof Airport) {
+						Airport airport = (Airport) box;
+						if (airport.getOwner() != null && airport.getOwner().getName().equals(player.getName())) {
+							if (airport.getState() == AirportState.MORTAGED) {
+								player.setCash(player.getCash() + (airport.getValue() / 2));
+							} else {
+								player.setCash(player.getCash() + airport.getValue());
+							}
 						}
 					}
 				}

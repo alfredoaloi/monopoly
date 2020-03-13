@@ -280,6 +280,7 @@ public class ApplicationController {
 										Optional<ButtonType> confResult = confAlert.showAndWait();
 										if (confResult.get() == ButtonType.OK) {
 											board.getCurrentPlayer().sellHouse(property);
+											property.checkAllGroup();
 										}
 									}
 								} else if (result.get() == mortage) {

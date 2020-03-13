@@ -165,6 +165,12 @@ public class Property extends Box {
 			Property other = (Property) board.getBoxes().get(propertyIndex);
 			if (other.getOwner() == null || this.owner == null
 					|| !(other.getOwner().getName().equals(owner.getName()))) {
+				if (this.state == PropertyState.ALL_GROUP) {
+					this.state = PropertyState.NO_HOUSES;
+				}
+				if (other.getState() == PropertyState.ALL_GROUP) {
+					other.setState(PropertyState.NO_HOUSES);
+				}
 				return;
 			}
 		}

@@ -1,4 +1,7 @@
 # Monopoly
+**Inizio sviluppo: Feb. 2020**
+
+**Fine sviluppo: Mar. 2020**
 ## Progetto per il corso di Intelligenza Artificiale 2020
 ### Autori
 - Alfredo Aloi, 189593
